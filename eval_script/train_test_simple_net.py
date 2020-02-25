@@ -16,10 +16,9 @@ warnings.filterwarnings('ignore')
 def train_test(args_list):
 
     iteration, dataset_name, classification_algorithm = args_list
+    print('Evaluating {0} on {1} at round {2} ...'.format(classification_algorithm, dataset_name, iteration))
 
     X_train, X_test, y_train, y_test = get_splitted_data(dataset_name, iteration)
-
-    print('Original shape:', X_train.shape, X_test.shape)
 
     # Normalize
     scaler = preprocessing.StandardScaler().fit(X_train)

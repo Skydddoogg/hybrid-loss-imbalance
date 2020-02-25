@@ -17,10 +17,9 @@ warnings.filterwarnings('ignore')
 def train_test(args_list):
 
     iteration, dataset_name, classification_algorithm = args_list
+    print('Evaluating {0} on {1} at round {2} ...'.format(classification_algorithm, dataset_name, iteration))
 
     X_train, X_test, y_train, y_test = get_splitted_data(dataset_name, iteration)
-
-    print('Original shape:', X_train.shape, X_test.shape)
 
     # Normalize
     scaler = preprocessing.StandardScaler().fit(X_train)
@@ -41,7 +40,6 @@ def train_test(args_list):
 
     for C in C_range:
         for gamma in gamma_range:
-            print('Training for iteration #%s...' % (iteration))
             params = '-c {0} -t {1} -g {2}'.format(C, 2, gamma) # -t 0 is to linear kernel
             model = svm_train(y_train, X_train_scaled, params)
             y_pred, p_acc, p_val = svm_predict(y_test, X_test_scaled, model)

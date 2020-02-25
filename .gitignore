@@ -136,3 +136,4 @@ external_models/
 
 # Custom file
 *.ipynb
+*.png
