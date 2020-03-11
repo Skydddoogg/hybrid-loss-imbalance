@@ -133,7 +133,9 @@ test/
 train/
 results/
 external_models/
+external_datasets/
 
 # Custom file
 *.ipynb
 *.png
+debugger.*

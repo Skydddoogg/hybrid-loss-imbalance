@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
     args_list = [[str(stage + 1), args.dataset_name, args.classification_algorithm] for stage in range(ITERATION)]
 
-    with Pool(processes=5) as pool:
-        pool.map(train_test, args_list)
-    # for args in args_list:
-    #     train_test(args)
+    # with Pool(processes=5) as pool:
+    #     pool.map(train_test, args_list)
+    for args in args_list:
+        train_test(args)

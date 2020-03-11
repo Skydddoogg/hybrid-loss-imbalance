@@ -1,7 +1,9 @@
 import os
 import numpy as np
-from imblearn.datasets import fetch_datasets
+from imblearn.datasets import fetch_datasets, make_imbalance
 from sklearn.model_selection import train_test_split
+from sklearn.datasets import make_classification
+from collections import Counter
 
 from config import train_set_path, test_set_path
 
@@ -47,5 +49,23 @@ def get_splitted_data(dataset, iteration):
     X_test = np.load(os.path.join(test_set_path, dataset, 'X', iteration + '.npy'))
     y_train = np.load(os.path.join(train_set_path, dataset, 'y', iteration + '.npy'))
     y_test = np.load(os.path.join(test_set_path, dataset, 'y', iteration + '.npy'))
+
+    return X_train, X_test, y_train, y_test
+
+def get_mocked_imbalanced_data(n_samples, n_features, neg_ratio, seed = 0):
+    X, y = make_classification(n_samples = n_samples, n_features = n_features)
+
+    class_count = Counter(y)
+    remaining_ratio = 100
+    step_down = int(neg_ratio * 100)
+    sampling_strategy = {}
+
+    for _class in set(y):
+        sampling_strategy[_class] = (class_count[_class] * remaining_ratio) // 100
+        remaining_ratio -= step_down
+
+    X_imb, y_imb = make_imbalance(X, y, sampling_strategy = sampling_strategy)
+
+    X_train, X_test, y_train, y_test = train_test_split(X_imb, y_imb, test_size = 0.20, random_state=seed, stratify=y_imb)
 
     return X_train, X_test, y_train, y_test

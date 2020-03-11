@@ -1,13 +1,13 @@
 import sys
 sys.path.append("../")
 import numpy as np
-from utils import get_splitted_data
+from utils import get_splitted_data, get_mocked_imbalanced_data
 from sklearn import preprocessing
 import os
 import argparse
 from multiprocessing import Pool
 import warnings
-from config import result_path, ITERATION, BATCH_SIZE, EPOCHS
+from config import result_path, ITERATION, BATCH_SIZE, EPOCHS, LOSS
 
 from external_models.DeepLearning import simple_net, utils
 
@@ -15,10 +15,11 @@ warnings.filterwarnings('ignore')
 
 def train_test(args_list):
 
-    iteration, dataset_name, classification_algorithm = args_list
+    iteration, dataset_name, classification_algorithm, loss = args_list
     print('Evaluating {0} on {1} at round {2} ...'.format(classification_algorithm, dataset_name, iteration))
 
     X_train, X_test, y_train, y_test = get_splitted_data(dataset_name, iteration)
+    # X_train, X_test, y_train, y_test = get_mocked_imbalanced_data(n_samples = 100, n_features = 5, neg_ratio = 0.9)
 
     # Normalize
     scaler = preprocessing.StandardScaler().fit(X_train)
@@ -26,7 +27,7 @@ def train_test(args_list):
     X_test_scaled = scaler.transform(X_test)
 
     # Model
-    model = simple_net.make_model((X_train_scaled.shape[1],))
+    model = simple_net.make_model(input_shape = (X_train_scaled.shape[1],), loss = LOSS[loss])
     history = model.fit(
         X_train_scaled,
         y_train,
@@ -50,11 +51,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("dataset_name")
     parser.add_argument("classification_algorithm")
+    parser.add_argument("loss")
     args = parser.parse_args()
 
-    args_list = [[str(stage + 1), args.dataset_name, args.classification_algorithm] for stage in range(ITERATION)]
+    args_list = [[str(stage + 1), args.dataset_name, args.classification_algorithm, args.loss] for stage in range(ITERATION)]
 
-    with Pool(processes=5) as pool:
-        pool.map(train_test, args_list)
-    # for args in args_list:
-    #     train_test(args)
+    # with Pool(processes=5) as pool:
+    #     pool.map(train_test, args_list)
+    for args in args_list:
+        train_test(args)
