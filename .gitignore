@@ -132,7 +132,7 @@ dmypy.json
 test/
 train/
 results/
-external_models/
+external_models/CSSVM/
 external_datasets/
 
 # Custom file
