@@ -17,17 +17,48 @@ METRICS = [
 ]
 LR = 1e-3
 LOSS = {
-      'custom-BCE': custom_loss.binary_crossentropy,
-      'custom-BalancedBCE': custom_loss.balanced_binary_crossentropy,
-      'custom-MSE': custom_loss.mean_square_error,
-      'custom-MFE': custom_loss.mean_false_error,
-      'custom-BalancedMFE': custom_loss.mean_squared_false_error,
-      'custom-FL': custom_loss.focal,
-      'custom-BalancedFL': custom_loss.balanced_focal,
-      'custom-Hybrid-MFE-FL': custom_loss.hybrid_mfe_fl,
-      'custom-BalancedHybrid-MFE-FL': custom_loss.balanced_hybrid_mfe_fl
+      'BCE': custom_loss.binary_crossentropy,
+      'Balanced-BCE': custom_loss.balanced_binary_crossentropy,
+      'MSE': custom_loss.mean_square_error,
+      'MFE': custom_loss.mean_false_error,
+      'Balanced-MFE': custom_loss.mean_squared_false_error,
+      'FL': custom_loss.focal,
+      'Balanced-FL': custom_loss.balanced_focal,
+      'Hybrid-MFE-FL': custom_loss.hybrid_mfe_fl,
+      'Balanced-Hybrid-MFE-FL': custom_loss.balanced_hybrid_mfe_fl
 }
 OPTIMIZER = keras.optimizers.Adam(lr=LR)
+
+# Source
+DATASETS = [
+      'ecoli',
+      'optical_digits',
+      'satimage',
+      'pen_digits',
+      'abalone',
+      'sick_euthyroid',
+      'spectrometer',
+      'car_eval_34',
+      'isolet',
+      'us_crime',
+      'yeast_ml8',
+      'scene',
+      'libras_move',
+      'thyroid_sick',
+      'coil_2000',
+      'arrhythmia',
+      'solar_flare_m0',
+      'oil',
+      'car_eval_4',
+      'wine_quality',
+      'letter_img',
+      'yeast_me2',
+      'webpage',
+      'ozone_level',
+      'mammography',
+      'protein_homo',
+      'abalone_19',
+]
 
 # Path
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
