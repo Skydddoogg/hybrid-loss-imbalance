@@ -2,14 +2,14 @@ import sys
 sys.path.append("../")
 
 import numpy as np
-from utils import get_splitted_data, get_mocked_imbalanced_data
+from dataset_tools.utils import get_splitted_data, get_mocked_imbalanced_data
 from sklearn import preprocessing
 import os
 import argparse
 from multiprocessing import Pool
 import warnings
 from config import result_path, ITERATION, BATCH_SIZE, EPOCHS, LOSS
-
+from eval_script.utils import save_results
 from external_models.DeepLearning import simple_net, utils
 
 warnings.filterwarnings('ignore')
@@ -41,10 +41,9 @@ def train_test(args_list):
     y_pred = model.predict_classes(X_test_scaled).T[0]
 
     # Save
-    utils.save_model(model, classification_algorithm + '_' + dataset_name + '_' + iteration)
-    utils.save_history(history, classification_algorithm + '_' + dataset_name + '_' + iteration)
-    np.save(os.path.join(result_path, 'groundtruth', classification_algorithm + '_' + dataset_name + '_' + iteration + ".npy"), np.array(y_test))
-    np.save(os.path.join(result_path, 'prediction', classification_algorithm + '_' + dataset_name + '_' + iteration + ".npy"), np.array(y_pred))
+    save_results(y_test, y_pred, classification_algorithm, dataset_name, iteration)
+    utils.save_model(model, classification_algorithm + '_' + dataset_name + '_' + iteration, dataset_name)
+    utils.save_history(history, classification_algorithm + '_' + dataset_name + '_' + iteration, dataset_name)
 
 if __name__ == '__main__':
 
