@@ -1,5 +1,4 @@
 from tensorflow import keras
-from focal_loss import BinaryFocalLoss
 from custom_functions import custom_loss
 import os
 
