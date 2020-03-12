@@ -86,10 +86,10 @@ def focal(y_true, y_pred, gamma = 2, label_smoothing=0):
     q = 1 - p
 
     # Loss for the positive examples
-    pos_loss = -(q ** gamma) * math_ops.log(p)
+    pos_loss = -(q ** gamma) * math_ops.log(p + epsilon())
 
     # Loss for the negative examples
-    neg_loss = -(p ** gamma) * math_ops.log(q)
+    neg_loss = -(p ** gamma) * math_ops.log(q + epsilon())
 
     loss = K.mean(y_true * pos_loss + (1 - y_true) * neg_loss)
 
@@ -115,10 +115,10 @@ def balanced_focal(y_true, y_pred, gamma = 2, label_smoothing=0, alpha = 0.7):
     q = 1 - p
 
     # Loss for the positive examples
-    pos_loss = -alpha * (q ** gamma) * math_ops.log(p)
+    pos_loss = -alpha * (q ** gamma) * math_ops.log(p + epsilon())
 
     # Loss for the negative examples
-    neg_loss = -(1 - alpha) * (p ** gamma) * math_ops.log(q)
+    neg_loss = -(1 - alpha) * (p ** gamma) * math_ops.log(q + epsilon())
 
     loss = K.mean(y_true * pos_loss + (1 - y_true) * neg_loss)
 
@@ -156,15 +156,15 @@ def hybrid_mfe_fl(y_true, y_pred, gamma = 2, label_smoothing=0):
     negative_q = 1 - negative_p
 
     # Loss for the positive examples
-    positive_pos_loss = -(positive_q ** gamma) * math_ops.log(positive_p)
-    negative_pos_loss = -(negative_q ** gamma) * math_ops.log(negative_p)
+    positive_pos_loss = -(positive_q ** gamma) * math_ops.log(positive_p + epsilon())
+    negative_pos_loss = -(negative_q ** gamma) * math_ops.log(negative_p + epsilon())
 
     # Loss for the negative examples
-    positive_neg_loss = -(positive_p ** gamma) * math_ops.log(positive_q)
-    negative_neg_loss = -(negative_p ** gamma) * math_ops.log(negative_q)
+    positive_neg_loss = -(positive_p ** gamma) * math_ops.log(positive_q + epsilon())
+    negative_neg_loss = -(negative_p ** gamma) * math_ops.log(negative_q + epsilon())
 
-    positive_loss = K.mean(positive_y_true * positive_pos_loss + (1 - positive_y_true) * positive_neg_loss)
-    negative_loss = K.mean(negative_y_true * negative_pos_loss + (1 - negative_y_true) * negative_neg_loss)
+    positive_loss = tf.where(tf.equal(n_positive, 0), 0.0, K.mean(positive_y_true * positive_pos_loss + (1 - positive_y_true) * positive_neg_loss))
+    negative_loss = tf.where(tf.equal(n_negative, 0), 0.0, K.mean(negative_y_true * negative_pos_loss + (1 - negative_y_true) * negative_neg_loss))
 
     loss = K.mean(positive_loss + negative_loss)
 
@@ -202,15 +202,15 @@ def balanced_hybrid_mfe_fl(y_true, y_pred, gamma = 2, label_smoothing=0, alpha =
     negative_q = 1 - negative_p
 
     # Loss for the positive examples
-    positive_pos_loss = -alpha * (positive_q ** gamma) * math_ops.log(positive_p)
-    negative_pos_loss = -alpha * (negative_q ** gamma) * math_ops.log(negative_p)
+    positive_pos_loss = -alpha * (positive_q ** gamma) * math_ops.log(positive_p + epsilon())
+    negative_pos_loss = -alpha * (negative_q ** gamma) * math_ops.log(negative_p + epsilon())
 
     # Loss for the negative examples
-    positive_neg_loss = -(1 - alpha) * (positive_p ** gamma) * math_ops.log(positive_q)
-    negative_neg_loss = -(1 - alpha) * (negative_p ** gamma) * math_ops.log(negative_q)
+    positive_neg_loss = -(1 - alpha) * (positive_p ** gamma) * math_ops.log(positive_q + epsilon())
+    negative_neg_loss = -(1 - alpha) * (negative_p ** gamma) * math_ops.log(negative_q + epsilon())
 
-    positive_loss = K.mean(positive_y_true * positive_pos_loss + (1 - positive_y_true) * positive_neg_loss)
-    negative_loss = K.mean(negative_y_true * negative_pos_loss + (1 - negative_y_true) * negative_neg_loss)
+    positive_loss = tf.where(tf.equal(n_positive, 0), 0.0, K.mean(positive_y_true * positive_pos_loss + (1 - positive_y_true) * positive_neg_loss))
+    negative_loss = tf.where(tf.equal(n_negative, 0), 0.0, K.mean(negative_y_true * negative_pos_loss + (1 - negative_y_true) * negative_neg_loss))
 
     loss = K.mean(positive_loss + negative_loss)
 
@@ -236,10 +236,10 @@ def binary_crossentropy(y_true, y_pred, label_smoothing=0):
     q = 1 - p
 
     # Loss for the positive examples
-    pos_loss = -y_true * math_ops.log(p)
+    pos_loss = -y_true * math_ops.log(p + epsilon())
 
     # Loss for the negative examples
-    neg_loss = -(1 - y_true) * math_ops.log(q)
+    neg_loss = -(1 - y_true) * math_ops.log(q + epsilon())
 
     loss = K.mean(neg_loss + pos_loss)
 
@@ -265,10 +265,10 @@ def balanced_binary_crossentropy(y_true, y_pred, label_smoothing=0, alpha = 0.7)
     q = 1 - p
 
     # Loss for the positive examples
-    pos_loss = -alpha * y_true * math_ops.log(p)
+    pos_loss = -alpha * y_true * math_ops.log(p + epsilon())
 
     # Loss for the negative examples
-    neg_loss = -(1 - alpha) * (1 - y_true) * math_ops.log(q)
+    neg_loss = -(1 - alpha) * (1 - y_true) * math_ops.log(q + epsilon())
 
     loss = K.mean(neg_loss + pos_loss)
 
