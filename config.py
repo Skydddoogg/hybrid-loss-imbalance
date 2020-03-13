@@ -4,7 +4,7 @@ import os
 
 # Constant
 ITERATION = 5
-BATCH_SIZE = 4
+BATCH_SIZE = 16
 EPOCHS = 50
 METRICS = [
       keras.metrics.TruePositives(name='tp'),
@@ -18,14 +18,14 @@ METRICS = [
 LR = 1e-3
 LOSS = {
       'BCE': custom_loss.binary_crossentropy,
-      'Balanced-BCE': custom_loss.balanced_binary_crossentropy,
+      # 'Balanced-BCE': custom_loss.balanced_binary_crossentropy,
       'MSE': custom_loss.mean_square_error,
       'MFE': custom_loss.mean_false_error,
-      'Balanced-MFE': custom_loss.mean_squared_false_error,
+      # 'Balanced-MFE': custom_loss.mean_squared_false_error,
       'FL': custom_loss.focal,
-      'Balanced-FL': custom_loss.balanced_focal,
+      # 'Balanced-FL': custom_loss.balanced_focal,
       'Hybrid-MFE-FL': custom_loss.hybrid_mfe_fl,
-      'Balanced-Hybrid-MFE-FL': custom_loss.balanced_hybrid_mfe_fl
+      # 'Balanced-Hybrid-MFE-FL': custom_loss.balanced_hybrid_mfe_fl
 }
 OPTIMIZER = keras.optimizers.Adam(lr=LR)
 
