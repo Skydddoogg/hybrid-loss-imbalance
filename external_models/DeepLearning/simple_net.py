@@ -8,8 +8,8 @@ def make_model(input_shape, loss, metrics = METRICS, optimizer = OPTIMIZER, outp
         output_bias = tf.keras.initializers.Constant(output_bias)
 
     model = keras.Sequential([
-        keras.layers.Dense(16, activation='relu', input_shape=input_shape),
-        keras.layers.Dropout(0.5),
+        keras.layers.Dense(128, activation='relu', input_shape=input_shape),
+        keras.layers.Dense(128, activation='relu'),
         keras.layers.Dense(1, activation='sigmoid', bias_initializer=output_bias),
     ])
 
