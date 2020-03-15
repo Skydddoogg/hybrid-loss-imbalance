@@ -5,7 +5,7 @@ import os
 # Constant
 ITERATION = 5
 BATCH_SIZE = 16
-EPOCHS = 50
+EPOCHS = 100
 METRICS = [
       keras.metrics.TruePositives(name='tp'),
       keras.metrics.FalsePositives(name='fp'),
@@ -15,6 +15,12 @@ METRICS = [
       keras.metrics.Recall(name='recall'),
       keras.metrics.AUC(name='auc'),
 ]
+EARLY_STOPPING = keras.callbacks.EarlyStopping(
+    monitor='val_auc', 
+    verbose=0,
+    patience=10,
+    mode='max',
+    restore_best_weights=True)
 LR = 1e-3
 LOSS = {
       'BCE': custom_loss.binary_crossentropy,
@@ -31,33 +37,33 @@ OPTIMIZER = keras.optimizers.Adam(lr=LR)
 
 # Source
 DATASETS = [
-      # 'ecoli',
-      # 'optical_digits',
-      # 'satimage',
-      # 'pen_digits',
-      # 'abalone',
-      # 'sick_euthyroid',
-      # 'spectrometer',
-      # 'car_eval_34',
-      # 'isolet',
-      # 'us_crime',
-      # 'yeast_ml8',
-      # 'scene',
-      # 'libras_move',
-      # 'thyroid_sick',
-      'coil_2000',
-      'arrhythmia',
-      'solar_flare_m0',
-      'oil',
-      'car_eval_4',
-      'wine_quality',
-      'letter_img',
-      'yeast_me2',
-      'webpage',
-      'ozone_level',
-      'mammography',
-      'protein_homo',
-      'abalone_19',
+      'ecoli',
+      'optical_digits',
+      'satimage',
+      'pen_digits',
+      'abalone',
+      'sick_euthyroid',
+      'spectrometer',
+      'car_eval_34',
+      'isolet',
+      'us_crime',
+      'yeast_ml8',
+      'scene',
+      'libras_move',
+      'thyroid_sick',
+      # 'coil_2000',
+      # 'arrhythmia',
+      # 'solar_flare_m0',
+      # 'oil',
+      # 'car_eval_4',
+      # 'wine_quality',
+      # 'letter_img',
+      # 'yeast_me2',
+      # 'webpage',
+      # 'ozone_level',
+      # 'mammography',
+      # 'protein_homo',
+      # 'abalone_19',
 ]
 
 # Path

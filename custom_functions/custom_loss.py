@@ -7,6 +7,8 @@ from tensorflow.python.keras import backend_config
 from tensorflow.python.ops import clip_ops
 from custom_functions.utils import _constant_to_tensor, tf_count
 
+GAMMA = 2
+
 epsilon = backend_config.epsilon
 
 def mean_false_error(y_true, y_pred):
@@ -66,7 +68,7 @@ def mean_square_error(y_true, y_pred):
 
     return loss
 
-def focal(y_true, y_pred, gamma = 2, label_smoothing=0):
+def focal(y_true, y_pred, gamma = GAMMA, label_smoothing=0):
     y_pred = ops.convert_to_tensor(y_pred)
     y_true = math_ops.cast(y_true, y_pred.dtype)
     label_smoothing = ops.convert_to_tensor(label_smoothing, dtype=K.floatx())
@@ -95,7 +97,7 @@ def focal(y_true, y_pred, gamma = 2, label_smoothing=0):
 
     return loss
 
-def balanced_focal(y_true, y_pred, gamma = 2, label_smoothing=0, alpha = 0.7):
+def balanced_focal(y_true, y_pred, gamma = GAMMA, label_smoothing=0, alpha = 0.7):
     y_pred = ops.convert_to_tensor(y_pred)
     y_true = math_ops.cast(y_true, y_pred.dtype)
     label_smoothing = ops.convert_to_tensor(label_smoothing, dtype=K.floatx())
@@ -124,7 +126,7 @@ def balanced_focal(y_true, y_pred, gamma = 2, label_smoothing=0, alpha = 0.7):
 
     return loss
 
-def hybrid_mfe_fl(y_true, y_pred, gamma = 2, label_smoothing=0):
+def hybrid_mfe_fl(y_true, y_pred, gamma = GAMMA, label_smoothing=0):
 
     y_pred = ops.convert_to_tensor(y_pred)
     y_true = math_ops.cast(y_true, y_pred.dtype)
@@ -170,7 +172,7 @@ def hybrid_mfe_fl(y_true, y_pred, gamma = 2, label_smoothing=0):
 
     return loss
 
-def balanced_hybrid_mfe_fl(y_true, y_pred, gamma = 2, label_smoothing=0, alpha = 0.7):
+def balanced_hybrid_mfe_fl(y_true, y_pred, gamma = GAMMA, label_smoothing=0, alpha = 0.7):
 
     y_pred = ops.convert_to_tensor(y_pred)
     y_true = math_ops.cast(y_true, y_pred.dtype)

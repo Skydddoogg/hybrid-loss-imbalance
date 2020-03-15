@@ -8,7 +8,7 @@ import os
 import argparse
 from multiprocessing import Pool
 import warnings
-from config import result_path, ITERATION, BATCH_SIZE, EPOCHS, LOSS
+from config import result_path, ITERATION, BATCH_SIZE, EPOCHS, LOSS, EARLY_STOPPING
 from eval_script.utils import save_results
 from external_models.DeepLearning import simple_net, utils
 
@@ -35,6 +35,7 @@ def train_test(args_list):
         epochs=EPOCHS,
         batch_size=BATCH_SIZE,
         validation_split=0.2,
+        callbacks=[EARLY_STOPPING],
         verbose=0)
     
     # Get predictions
