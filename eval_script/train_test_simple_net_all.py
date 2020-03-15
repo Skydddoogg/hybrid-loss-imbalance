@@ -9,7 +9,6 @@ import os
 import argparse
 from multiprocessing import Pool
 import warnings
-import tensorflow as tf
 from config import result_path, ITERATION, BATCH_SIZE, EPOCHS, LOSS, DATASETS, EARLY_STOPPING, HP_FACTOR
 from eval_script.utils import save_results
 from external_models.DeepLearning import simple_net, utils
@@ -19,9 +18,6 @@ warnings.filterwarnings('ignore')
 def train_test(args_list):
 
     iteration, dataset_name, classification_algorithm, loss = args_list
-
-    log_dir = "gs://sky-movo/class_imbalance/logs/fit/" + dataset_name + '/' + classification_algorithm
-    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
     X_train, X_test, y_train, y_test = get_splitted_data(dataset_name, iteration)
     # X_train, X_test, y_train, y_test = get_mocked_imbalanced_data(n_samples = 100, n_features = 5, neg_ratio = 0.9)
@@ -43,7 +39,7 @@ def train_test(args_list):
             epochs=EPOCHS,
             batch_size=BATCH_SIZE,
             validation_split=0.2,
-            callbacks=[EARLY_STOPPING, tensorboard_callback],
+            callbacks=[EARLY_STOPPING],
             verbose=0)
         
         # Get predictions
