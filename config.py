@@ -3,7 +3,7 @@ from custom_functions import custom_loss
 import os
 
 # Constant
-HP_FACTOR = [0.25, 0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00]
+HP_FACTOR = [2.0]
 ITERATION = 5
 BATCH_SIZE = 16
 EPOCHS = 100
