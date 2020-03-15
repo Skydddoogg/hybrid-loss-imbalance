@@ -3,6 +3,7 @@ from custom_functions import custom_loss
 import os
 
 # Constant
+HP_FACTOR = [0.25, 0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00]
 ITERATION = 5
 BATCH_SIZE = 16
 EPOCHS = 100
@@ -23,9 +24,9 @@ EARLY_STOPPING = keras.callbacks.EarlyStopping(
     restore_best_weights=True)
 LR = 1e-3
 LOSS = {
-      'BCE': custom_loss.binary_crossentropy,
+      # 'BCE': custom_loss.binary_crossentropy,
       # 'Balanced-BCE': custom_loss.balanced_binary_crossentropy,
-      'MSE': custom_loss.mean_square_error,
+      # 'MSE': custom_loss.mean_square_error,
       'MFE': custom_loss.mean_false_error,
       # 'Balanced-MFE': custom_loss.mean_squared_false_error,
       'FL': custom_loss.focal,

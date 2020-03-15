@@ -3,7 +3,7 @@ from tensorflow import keras
 
 from config import LOSS, METRICS, OPTIMIZER
 
-def make_model(input_shape, loss, metrics = METRICS, optimizer = OPTIMIZER, output_bias=None, factor = 0.25):
+def make_model(input_shape, loss, metrics = METRICS, optimizer = OPTIMIZER, output_bias=None, factor = 2.0):
     if output_bias is not None:
         output_bias = tf.keras.initializers.Constant(output_bias)
 
