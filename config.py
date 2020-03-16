@@ -5,7 +5,7 @@ import os
 # Constant
 ITERATION = 5
 BATCH_SIZE = 16
-EPOCHS = 100
+EPOCHS = 500
 METRICS = [
       keras.metrics.TruePositives(name='tp'),
       keras.metrics.FalsePositives(name='fp'),

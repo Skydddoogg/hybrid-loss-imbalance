@@ -45,8 +45,8 @@ def train_test(args_list):
 
     # Save
     save_results(y_test, y_pred, classification_algorithm, dataset_name, iteration)
-    utils.save_model(model, classification_algorithm + '_' + dataset_name + '_' + iteration, dataset_name)
-    utils.save_history(history, classification_algorithm + '_' + dataset_name + '_' + iteration, dataset_name)
+    # utils.save_model(model, classification_algorithm + '_' + dataset_name + '_' + iteration, dataset_name)
+    # utils.save_history(history, classification_algorithm + '_' + dataset_name + '_' + iteration, dataset_name)
 
 
 if __name__ == '__main__':
