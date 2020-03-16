@@ -7,271 +7,300 @@ from tensorflow.python.keras import backend_config
 from tensorflow.python.ops import clip_ops
 from custom_functions.utils import _constant_to_tensor, tf_count
 
-GAMMA = 2
-
 epsilon = backend_config.epsilon
 
-def mean_false_error(y_true, y_pred):
-    y_pred = ops.convert_to_tensor(y_pred)
-    y_true = math_ops.cast(y_true, y_pred.dtype)
+class MeanFalseError(object):
 
-    n_positive = tf_count(y_true, 1.0)
-    n_negative = tf_count(y_true, 0.0)
+    def __init__(self):
+        pass
 
-    positive_indices = tf.where(condition = tf.equal(y_true, 1.0))
-    negative_indices = tf.where(condition = tf.equal(y_true, 0.0))
+    def mean_false_error(self, y_true, y_pred):
+        y_pred = ops.convert_to_tensor(y_pred)
+        y_true = math_ops.cast(y_true, y_pred.dtype)
 
-    positive_y_true = tf.gather_nd(y_true, positive_indices)
-    negative_y_true = tf.gather_nd(y_true, negative_indices)
-    positive_y_pred = tf.gather_nd(y_pred, positive_indices)
-    negative_y_pred = tf.gather_nd(y_pred, negative_indices)
+        n_positive = tf_count(y_true, 1.0)
+        n_negative = tf_count(y_true, 0.0)
 
-    FNE = math_ops.multiply(math_ops.cast(tf.where(tf.equal(n_positive, 0), 0.0, math_ops.cast(1 / n_positive, tf.float32)), tf.float32), math_ops.reduce_sum(math_ops.multiply(1 / 2, math_ops.square(positive_y_pred - positive_y_true))))
-    FPE = math_ops.multiply(math_ops.cast(tf.where(tf.equal(n_negative, 0), 0.0, math_ops.cast(1 / n_negative, tf.float32)), tf.float32), math_ops.reduce_sum(math_ops.multiply(1 / 2, math_ops.square(negative_y_pred - negative_y_true))))
+        positive_indices = tf.where(condition = tf.equal(y_true, 1.0))
+        negative_indices = tf.where(condition = tf.equal(y_true, 0.0))
 
-    loss = FNE + FPE
+        positive_y_true = tf.gather_nd(y_true, positive_indices)
+        negative_y_true = tf.gather_nd(y_true, negative_indices)
+        positive_y_pred = tf.gather_nd(y_pred, positive_indices)
+        negative_y_pred = tf.gather_nd(y_pred, negative_indices)
 
-    return loss
+        FNE = math_ops.multiply(math_ops.cast(tf.where(tf.equal(n_positive, 0), 0.0, math_ops.cast(1 / n_positive, tf.float32)), tf.float32), math_ops.reduce_sum(math_ops.multiply(1 / 2, math_ops.square(positive_y_pred - positive_y_true))))
+        FPE = math_ops.multiply(math_ops.cast(tf.where(tf.equal(n_negative, 0), 0.0, math_ops.cast(1 / n_negative, tf.float32)), tf.float32), math_ops.reduce_sum(math_ops.multiply(1 / 2, math_ops.square(negative_y_pred - negative_y_true))))
 
-def mean_squared_false_error(y_true, y_pred):
-    y_pred = ops.convert_to_tensor(y_pred)
-    y_true = math_ops.cast(y_true, y_pred.dtype)
+        loss = FNE + FPE
 
-    n_positive = tf_count(y_true, 1.0)
-    n_negative = tf_count(y_true, 0.0)
+        return loss
 
-    positive_indices = tf.where(condition = tf.equal(y_true, 1.0))
-    negative_indices = tf.where(condition = tf.equal(y_true, 0.0))
+    def mean_squared_false_error(self, y_true, y_pred):
+        y_pred = ops.convert_to_tensor(y_pred)
+        y_true = math_ops.cast(y_true, y_pred.dtype)
 
-    positive_y_true = tf.gather_nd(y_true, positive_indices)
-    negative_y_true = tf.gather_nd(y_true, negative_indices)
-    positive_y_pred = tf.gather_nd(y_pred, positive_indices)
-    negative_y_pred = tf.gather_nd(y_pred, negative_indices)
+        n_positive = tf_count(y_true, 1.0)
+        n_negative = tf_count(y_true, 0.0)
 
-    FNE = math_ops.multiply(math_ops.cast(tf.where(tf.equal(n_positive, 0), 0.0, math_ops.cast(1 / n_positive, tf.float32)), tf.float32), math_ops.reduce_sum(math_ops.multiply(1 / 2, math_ops.square(positive_y_pred - positive_y_true))))
-    FPE = math_ops.multiply(math_ops.cast(tf.where(tf.equal(n_negative, 0), 0.0, math_ops.cast(1 / n_negative, tf.float32)), tf.float32), math_ops.reduce_sum(math_ops.multiply(1 / 2, math_ops.square(negative_y_pred - negative_y_true))))
+        positive_indices = tf.where(condition = tf.equal(y_true, 1.0))
+        negative_indices = tf.where(condition = tf.equal(y_true, 0.0))
 
-    loss = (FNE ** 2) + (FPE ** 2)
+        positive_y_true = tf.gather_nd(y_true, positive_indices)
+        negative_y_true = tf.gather_nd(y_true, negative_indices)
+        positive_y_pred = tf.gather_nd(y_pred, positive_indices)
+        negative_y_pred = tf.gather_nd(y_pred, negative_indices)
 
-    return loss
+        FNE = math_ops.multiply(math_ops.cast(tf.where(tf.equal(n_positive, 0), 0.0, math_ops.cast(1 / n_positive, tf.float32)), tf.float32), math_ops.reduce_sum(math_ops.multiply(1 / 2, math_ops.square(positive_y_pred - positive_y_true))))
+        FPE = math_ops.multiply(math_ops.cast(tf.where(tf.equal(n_negative, 0), 0.0, math_ops.cast(1 / n_negative, tf.float32)), tf.float32), math_ops.reduce_sum(math_ops.multiply(1 / 2, math_ops.square(negative_y_pred - negative_y_true))))
 
-def mean_square_error(y_true, y_pred):
-    y_pred = ops.convert_to_tensor(y_pred)
-    y_true = math_ops.cast(y_true, y_pred.dtype)
+        loss = (FNE ** 2) + (FPE ** 2)
 
-    n_positive = tf_count(y_true, 1.0)
-    n_negative = tf_count(y_true, 0.0)
+        return loss
 
-    n_sample = n_negative + n_positive
+class MeanSquareError(object):
 
-    loss = math_ops.multiply(math_ops.cast(1 / n_sample, tf.float32), math_ops.reduce_sum(math_ops.multiply(1 / 2, math_ops.square(y_pred - y_true))))
+    def __init__(self):
+        pass
 
-    return loss
+    def mean_square_error(self, y_true, y_pred):
+        y_pred = ops.convert_to_tensor(y_pred)
+        y_true = math_ops.cast(y_true, y_pred.dtype)
 
-def focal(y_true, y_pred, gamma = GAMMA, label_smoothing=0):
-    y_pred = ops.convert_to_tensor(y_pred)
-    y_true = math_ops.cast(y_true, y_pred.dtype)
-    label_smoothing = ops.convert_to_tensor(label_smoothing, dtype=K.floatx())
+        n_positive = tf_count(y_true, 1.0)
+        n_negative = tf_count(y_true, 0.0)
 
-    def _smooth_labels():
-        return y_true * (1.0 - label_smoothing) + 0.5 * label_smoothing
+        n_sample = n_negative + n_positive
 
-    y_true = smart_cond.smart_cond(label_smoothing, _smooth_labels, lambda: y_true)
+        loss = math_ops.multiply(math_ops.cast(1 / n_sample, tf.float32), math_ops.reduce_sum(math_ops.multiply(1 / 2, math_ops.square(y_pred - y_true))))
 
-    epsilon_ = _constant_to_tensor(epsilon(), y_pred.dtype.base_dtype)
-    y_pred = clip_ops.clip_by_value(y_pred, epsilon_, 1. - epsilon_)
+        return loss
 
-    # Predicted prob for positive class
-    p = y_pred
+class CrossEntropy(object):
 
-    # Predicted prob for negative class
-    q = 1 - p
+    def __init__(self, alpha = 0.7, label_smoothing = 0):
+        self.alpha = alpha
+        self.label_smoothing = label_smoothing
 
-    # Loss for the positive examples
-    pos_loss = -(q ** gamma) * math_ops.log(p + epsilon())
+    def binary_crossentropy(self, y_true, y_pred):
+        y_pred = ops.convert_to_tensor(y_pred)
+        y_true = math_ops.cast(y_true, y_pred.dtype)
+        label_smoothing = ops.convert_to_tensor(self.label_smoothing, dtype=K.floatx())
 
-    # Loss for the negative examples
-    neg_loss = -(p ** gamma) * math_ops.log(q + epsilon())
+        def _smooth_labels():
+            return y_true * (1.0 - label_smoothing) + 0.5 * label_smoothing
 
-    loss = K.mean(y_true * pos_loss + (1 - y_true) * neg_loss)
+        y_true = smart_cond.smart_cond(label_smoothing, _smooth_labels, lambda: y_true)
 
-    return loss
+        epsilon_ = _constant_to_tensor(epsilon(), y_pred.dtype.base_dtype)
+        y_pred = clip_ops.clip_by_value(y_pred, epsilon_, 1. - epsilon_)
 
-def balanced_focal(y_true, y_pred, gamma = GAMMA, label_smoothing=0, alpha = 0.7):
-    y_pred = ops.convert_to_tensor(y_pred)
-    y_true = math_ops.cast(y_true, y_pred.dtype)
-    label_smoothing = ops.convert_to_tensor(label_smoothing, dtype=K.floatx())
+        # Predicted prob for positive class
+        p = y_pred
 
-    def _smooth_labels():
-        return y_true * (1.0 - label_smoothing) + 0.5 * label_smoothing
+        # Predicted prob for negative class
+        q = 1 - p
 
-    y_true = smart_cond.smart_cond(label_smoothing, _smooth_labels, lambda: y_true)
+        # Loss for the positive examples
+        pos_loss = -y_true * math_ops.log(p + epsilon())
 
-    epsilon_ = _constant_to_tensor(epsilon(), y_pred.dtype.base_dtype)
-    y_pred = clip_ops.clip_by_value(y_pred, epsilon_, 1. - epsilon_)
+        # Loss for the negative examples
+        neg_loss = -(1 - y_true) * math_ops.log(q + epsilon())
 
-    # Predicted prob for positive class
-    p = y_pred
+        loss = K.mean(neg_loss + pos_loss)
 
-    # Predicted prob for negative class
-    q = 1 - p
+        return loss
 
-    # Loss for the positive examples
-    pos_loss = -alpha * (q ** gamma) * math_ops.log(p + epsilon())
+    def balanced_binary_crossentropy(self, y_true, y_pred):
+        y_pred = ops.convert_to_tensor(y_pred)
+        y_true = math_ops.cast(y_true, y_pred.dtype)
+        label_smoothing = ops.convert_to_tensor(self.label_smoothing, dtype=K.floatx())
 
-    # Loss for the negative examples
-    neg_loss = -(1 - alpha) * (p ** gamma) * math_ops.log(q + epsilon())
+        def _smooth_labels():
+            return y_true * (1.0 - label_smoothing) + 0.5 * label_smoothing
 
-    loss = K.mean(y_true * pos_loss + (1 - y_true) * neg_loss)
+        y_true = smart_cond.smart_cond(label_smoothing, _smooth_labels, lambda: y_true)
 
-    return loss
+        epsilon_ = _constant_to_tensor(epsilon(), y_pred.dtype.base_dtype)
+        y_pred = clip_ops.clip_by_value(y_pred, epsilon_, 1. - epsilon_)
 
-def hybrid_mfe_fl(y_true, y_pred, gamma = GAMMA, label_smoothing=0):
+        # Predicted prob for positive class
+        p = y_pred
 
-    y_pred = ops.convert_to_tensor(y_pred)
-    y_true = math_ops.cast(y_true, y_pred.dtype)
-    label_smoothing = ops.convert_to_tensor(label_smoothing, dtype=K.floatx())
+        # Predicted prob for negative class
+        q = 1 - p
 
-    def _smooth_labels():
-        return y_true * (1.0 - label_smoothing) + 0.5 * label_smoothing
+        # Loss for the positive examples
+        pos_loss = -self.alpha * y_true * math_ops.log(p + epsilon())
 
-    y_true = smart_cond.smart_cond(label_smoothing, _smooth_labels, lambda: y_true)
+        # Loss for the negative examples
+        neg_loss = -(1 - self.alpha) * (1 - y_true) * math_ops.log(q + epsilon())
 
-    epsilon_ = _constant_to_tensor(epsilon(), y_pred.dtype.base_dtype)
-    y_pred = clip_ops.clip_by_value(y_pred, epsilon_, 1. - epsilon_)
+        loss = K.mean(neg_loss + pos_loss)
 
-    n_positive = tf_count(y_true, 1.0)
-    n_negative = tf_count(y_true, 0.0)
+        return loss
 
-    positive_indices = tf.where(condition = tf.equal(y_true, 1.0))
-    negative_indices = tf.where(condition = tf.equal(y_true, 0.0))
 
-    positive_y_true = tf.gather_nd(y_true, positive_indices)
-    negative_y_true = tf.gather_nd(y_true, negative_indices)
-    positive_y_pred = tf.gather_nd(y_pred, positive_indices)
-    negative_y_pred = tf.gather_nd(y_pred, negative_indices)
+class Focal(object):
 
-    positive_p = positive_y_pred
-    negative_p = negative_y_pred
+    def __init__(self, gamma = 2, alpha = 0.7, label_smoothing = 0):
+        self.gamma = gamma
+        self.alpha = alpha
+        self.label_smoothing = label_smoothing
 
-    positive_q = 1 - positive_p
-    negative_q = 1 - negative_p
+    def focal(self, y_true, y_pred):
+        y_pred = ops.convert_to_tensor(y_pred)
+        y_true = math_ops.cast(y_true, y_pred.dtype)
+        label_smoothing = ops.convert_to_tensor(self.label_smoothing, dtype=K.floatx())
 
-    # Loss for the positive examples
-    positive_pos_loss = -(positive_q ** gamma) * math_ops.log(positive_p + epsilon())
-    negative_pos_loss = -(negative_q ** gamma) * math_ops.log(negative_p + epsilon())
+        def _smooth_labels():
+            return y_true * (1.0 - label_smoothing) + 0.5 * label_smoothing
 
-    # Loss for the negative examples
-    positive_neg_loss = -(positive_p ** gamma) * math_ops.log(positive_q + epsilon())
-    negative_neg_loss = -(negative_p ** gamma) * math_ops.log(negative_q + epsilon())
+        y_true = smart_cond.smart_cond(label_smoothing, _smooth_labels, lambda: y_true)
 
-    positive_loss = tf.where(tf.equal(n_positive, 0), 0.0, K.mean(positive_y_true * positive_pos_loss + (1 - positive_y_true) * positive_neg_loss))
-    negative_loss = tf.where(tf.equal(n_negative, 0), 0.0, K.mean(negative_y_true * negative_pos_loss + (1 - negative_y_true) * negative_neg_loss))
+        epsilon_ = _constant_to_tensor(epsilon(), y_pred.dtype.base_dtype)
+        y_pred = clip_ops.clip_by_value(y_pred, epsilon_, 1. - epsilon_)
 
-    loss = K.mean(positive_loss + negative_loss)
+        # Predicted prob for positive class
+        p = y_pred
 
-    return loss
+        # Predicted prob for negative class
+        q = 1 - p
 
-def balanced_hybrid_mfe_fl(y_true, y_pred, gamma = GAMMA, label_smoothing=0, alpha = 0.7):
+        # Loss for the positive examples
+        pos_loss = -(q ** self.gamma) * math_ops.log(p + epsilon())
 
-    y_pred = ops.convert_to_tensor(y_pred)
-    y_true = math_ops.cast(y_true, y_pred.dtype)
-    label_smoothing = ops.convert_to_tensor(label_smoothing, dtype=K.floatx())
+        # Loss for the negative examples
+        neg_loss = -(p ** self.gamma) * math_ops.log(q + epsilon())
 
-    def _smooth_labels():
-        return y_true * (1.0 - label_smoothing) + 0.5 * label_smoothing
+        loss = K.mean(y_true * pos_loss + (1 - y_true) * neg_loss)
 
-    y_true = smart_cond.smart_cond(label_smoothing, _smooth_labels, lambda: y_true)
+        return loss
 
-    epsilon_ = _constant_to_tensor(epsilon(), y_pred.dtype.base_dtype)
-    y_pred = clip_ops.clip_by_value(y_pred, epsilon_, 1. - epsilon_)
+    def balanced_focal(self, y_true, y_pred):
+        y_pred = ops.convert_to_tensor(y_pred)
+        y_true = math_ops.cast(y_true, y_pred.dtype)
+        label_smoothing = ops.convert_to_tensor(self.label_smoothing, dtype=K.floatx())
 
-    n_positive = tf_count(y_true, 1.0)
-    n_negative = tf_count(y_true, 0.0)
+        def _smooth_labels():
+            return y_true * (1.0 - label_smoothing) + 0.5 * label_smoothing
 
-    positive_indices = tf.where(condition = tf.equal(y_true, 1.0))
-    negative_indices = tf.where(condition = tf.equal(y_true, 0.0))
+        y_true = smart_cond.smart_cond(label_smoothing, _smooth_labels, lambda: y_true)
 
-    positive_y_true = tf.gather_nd(y_true, positive_indices)
-    negative_y_true = tf.gather_nd(y_true, negative_indices)
-    positive_y_pred = tf.gather_nd(y_pred, positive_indices)
-    negative_y_pred = tf.gather_nd(y_pred, negative_indices)
+        epsilon_ = _constant_to_tensor(epsilon(), y_pred.dtype.base_dtype)
+        y_pred = clip_ops.clip_by_value(y_pred, epsilon_, 1. - epsilon_)
 
-    positive_p = positive_y_pred
-    negative_p = negative_y_pred
+        # Predicted prob for positive class
+        p = y_pred
 
-    positive_q = 1 - positive_p
-    negative_q = 1 - negative_p
+        # Predicted prob for negative class
+        q = 1 - p
 
-    # Loss for the positive examples
-    positive_pos_loss = -alpha * (positive_q ** gamma) * math_ops.log(positive_p + epsilon())
-    negative_pos_loss = -alpha * (negative_q ** gamma) * math_ops.log(negative_p + epsilon())
+        # Loss for the positive examples
+        pos_loss = -self.alpha * (q ** self.gamma) * math_ops.log(p + epsilon())
 
-    # Loss for the negative examples
-    positive_neg_loss = -(1 - alpha) * (positive_p ** gamma) * math_ops.log(positive_q + epsilon())
-    negative_neg_loss = -(1 - alpha) * (negative_p ** gamma) * math_ops.log(negative_q + epsilon())
+        # Loss for the negative examples
+        neg_loss = -(1 - self.alpha) * (p ** self.gamma) * math_ops.log(q + epsilon())
 
-    positive_loss = tf.where(tf.equal(n_positive, 0), 0.0, K.mean(positive_y_true * positive_pos_loss + (1 - positive_y_true) * positive_neg_loss))
-    negative_loss = tf.where(tf.equal(n_negative, 0), 0.0, K.mean(negative_y_true * negative_pos_loss + (1 - negative_y_true) * negative_neg_loss))
+        loss = K.mean(y_true * pos_loss + (1 - y_true) * neg_loss)
 
-    loss = K.mean(positive_loss + negative_loss)
+        return loss
 
-    return loss
+class Hybrid(object):
 
-def binary_crossentropy(y_true, y_pred, label_smoothing=0):
-    y_pred = ops.convert_to_tensor(y_pred)
-    y_true = math_ops.cast(y_true, y_pred.dtype)
-    label_smoothing = ops.convert_to_tensor(label_smoothing, dtype=K.floatx())
+    def __init__(self, gamma = 2, alpha = 0.7, label_smoothing = 0):
+        self.gamma = gamma
+        self.alpha = alpha
+        self.label_smoothing = label_smoothing
 
-    def _smooth_labels():
-        return y_true * (1.0 - label_smoothing) + 0.5 * label_smoothing
+    def hybrid_mfe_fl(self, y_true, y_pred):
 
-    y_true = smart_cond.smart_cond(label_smoothing, _smooth_labels, lambda: y_true)
+        y_pred = ops.convert_to_tensor(y_pred)
+        y_true = math_ops.cast(y_true, y_pred.dtype)
+        label_smoothing = ops.convert_to_tensor(self.label_smoothing, dtype=K.floatx())
 
-    epsilon_ = _constant_to_tensor(epsilon(), y_pred.dtype.base_dtype)
-    y_pred = clip_ops.clip_by_value(y_pred, epsilon_, 1. - epsilon_)
+        def _smooth_labels():
+            return y_true * (1.0 - label_smoothing) + 0.5 * label_smoothing
 
-    # Predicted prob for positive class
-    p = y_pred
+        y_true = smart_cond.smart_cond(label_smoothing, _smooth_labels, lambda: y_true)
 
-    # Predicted prob for negative class
-    q = 1 - p
+        epsilon_ = _constant_to_tensor(epsilon(), y_pred.dtype.base_dtype)
+        y_pred = clip_ops.clip_by_value(y_pred, epsilon_, 1. - epsilon_)
 
-    # Loss for the positive examples
-    pos_loss = -y_true * math_ops.log(p + epsilon())
+        n_positive = tf_count(y_true, 1.0)
+        n_negative = tf_count(y_true, 0.0)
 
-    # Loss for the negative examples
-    neg_loss = -(1 - y_true) * math_ops.log(q + epsilon())
+        positive_indices = tf.where(condition = tf.equal(y_true, 1.0))
+        negative_indices = tf.where(condition = tf.equal(y_true, 0.0))
 
-    loss = K.mean(neg_loss + pos_loss)
+        positive_y_true = tf.gather_nd(y_true, positive_indices)
+        negative_y_true = tf.gather_nd(y_true, negative_indices)
+        positive_y_pred = tf.gather_nd(y_pred, positive_indices)
+        negative_y_pred = tf.gather_nd(y_pred, negative_indices)
 
-    return loss
+        positive_p = positive_y_pred
+        negative_p = negative_y_pred
 
-def balanced_binary_crossentropy(y_true, y_pred, label_smoothing=0, alpha = 0.7):
-    y_pred = ops.convert_to_tensor(y_pred)
-    y_true = math_ops.cast(y_true, y_pred.dtype)
-    label_smoothing = ops.convert_to_tensor(label_smoothing, dtype=K.floatx())
+        positive_q = 1 - positive_p
+        negative_q = 1 - negative_p
 
-    def _smooth_labels():
-        return y_true * (1.0 - label_smoothing) + 0.5 * label_smoothing
+        # Loss for the positive examples
+        positive_pos_loss = -(positive_q ** self.gamma) * math_ops.log(positive_p + epsilon())
+        negative_pos_loss = -(negative_q ** self.gamma) * math_ops.log(negative_p + epsilon())
 
-    y_true = smart_cond.smart_cond(label_smoothing, _smooth_labels, lambda: y_true)
+        # Loss for the negative examples
+        positive_neg_loss = -(positive_p ** self.gamma) * math_ops.log(positive_q + epsilon())
+        negative_neg_loss = -(negative_p ** self.gamma) * math_ops.log(negative_q + epsilon())
 
-    epsilon_ = _constant_to_tensor(epsilon(), y_pred.dtype.base_dtype)
-    y_pred = clip_ops.clip_by_value(y_pred, epsilon_, 1. - epsilon_)
+        positive_loss = tf.where(tf.equal(n_positive, 0), 0.0, K.mean(positive_y_true * positive_pos_loss + (1 - positive_y_true) * positive_neg_loss))
+        negative_loss = tf.where(tf.equal(n_negative, 0), 0.0, K.mean(negative_y_true * negative_pos_loss + (1 - negative_y_true) * negative_neg_loss))
 
-    # Predicted prob for positive class
-    p = y_pred
+        loss = K.mean(positive_loss + negative_loss)
 
-    # Predicted prob for negative class
-    q = 1 - p
+        return loss
 
-    # Loss for the positive examples
-    pos_loss = -alpha * y_true * math_ops.log(p + epsilon())
+    def balanced_hybrid_mfe_fl(self, y_true, y_pred):
 
-    # Loss for the negative examples
-    neg_loss = -(1 - alpha) * (1 - y_true) * math_ops.log(q + epsilon())
+        y_pred = ops.convert_to_tensor(y_pred)
+        y_true = math_ops.cast(y_true, y_pred.dtype)
+        label_smoothing = ops.convert_to_tensor(self.label_smoothing, dtype=K.floatx())
 
-    loss = K.mean(neg_loss + pos_loss)
+        def _smooth_labels():
+            return y_true * (1.0 - label_smoothing) + 0.5 * label_smoothing
 
-    return loss
+        y_true = smart_cond.smart_cond(label_smoothing, _smooth_labels, lambda: y_true)
+
+        epsilon_ = _constant_to_tensor(epsilon(), y_pred.dtype.base_dtype)
+        y_pred = clip_ops.clip_by_value(y_pred, epsilon_, 1. - epsilon_)
+
+        n_positive = tf_count(y_true, 1.0)
+        n_negative = tf_count(y_true, 0.0)
+
+        positive_indices = tf.where(condition = tf.equal(y_true, 1.0))
+        negative_indices = tf.where(condition = tf.equal(y_true, 0.0))
+
+        positive_y_true = tf.gather_nd(y_true, positive_indices)
+        negative_y_true = tf.gather_nd(y_true, negative_indices)
+        positive_y_pred = tf.gather_nd(y_pred, positive_indices)
+        negative_y_pred = tf.gather_nd(y_pred, negative_indices)
+
+        positive_p = positive_y_pred
+        negative_p = negative_y_pred
+
+        positive_q = 1 - positive_p
+        negative_q = 1 - negative_p
+
+        # Loss for the positive examples
+        positive_pos_loss = -self.alpha * (positive_q ** self.gamma) * math_ops.log(positive_p + epsilon())
+        negative_pos_loss = -self.alpha * (negative_q ** self.gamma) * math_ops.log(negative_p + epsilon())
+
+        # Loss for the negative examples
+        positive_neg_loss = -(1 - self.alpha) * (positive_p ** self.gamma) * math_ops.log(positive_q + epsilon())
+        negative_neg_loss = -(1 - self.alpha) * (negative_p ** self.gamma) * math_ops.log(negative_q + epsilon())
+
+        positive_loss = tf.where(tf.equal(n_positive, 0), 0.0, K.mean(positive_y_true * positive_pos_loss + (1 - positive_y_true) * positive_neg_loss))
+        negative_loss = tf.where(tf.equal(n_negative, 0), 0.0, K.mean(negative_y_true * negative_pos_loss + (1 - negative_y_true) * negative_neg_loss))
+
+        loss = K.mean(positive_loss + negative_loss)
+
+        return loss

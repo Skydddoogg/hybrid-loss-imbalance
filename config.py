@@ -3,7 +3,6 @@ from custom_functions import custom_loss
 import os
 
 # Constant
-HP_FACTOR = [2.0]
 ITERATION = 5
 BATCH_SIZE = 16
 EPOCHS = 100
@@ -24,15 +23,15 @@ EARLY_STOPPING = keras.callbacks.EarlyStopping(
     restore_best_weights=True)
 LR = 1e-3
 LOSS = {
-      # 'BCE': custom_loss.binary_crossentropy,
-      # 'Balanced-BCE': custom_loss.balanced_binary_crossentropy,
-      # 'MSE': custom_loss.mean_square_error,
-      'MFE': custom_loss.mean_false_error,
-      # 'Balanced-MFE': custom_loss.mean_squared_false_error,
-      'FL': custom_loss.focal,
-      # 'Balanced-FL': custom_loss.balanced_focal,
-      'Hybrid-MFE-FL': custom_loss.hybrid_mfe_fl,
-      # 'Balanced-Hybrid-MFE-FL': custom_loss.balanced_hybrid_mfe_fl
+      # 'BCE': custom_loss.CrossEntropy().binary_crossentropy,
+      # 'Balanced-BCE': custom_loss.CrossEntropy().balanced_binary_crossentropy,
+      # 'MSE': custom_loss.MeanSquareError().mean_square_error,
+      'MFE': custom_loss.MeanFalseError().mean_false_error,
+      # 'Balanced-MFE': custom_loss.MeanFalseError().mean_squared_false_error,
+      'FL': custom_loss.Focal().focal,
+      # 'Balanced-FL': custom_loss.Focal().balanced_focal,
+      'Hybrid-MFE-FL': custom_loss.Hybrid().hybrid_mfe_fl,
+      # 'Balanced-Hybrid-MFE-FL': custom_loss.Hybrid().balanced_hybrid_mfe_fl
 }
 OPTIMIZER = keras.optimizers.Adam(lr=LR)
 

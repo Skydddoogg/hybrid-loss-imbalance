@@ -9,7 +9,7 @@ import os
 import argparse
 from multiprocessing import Pool
 import warnings
-from config import result_path, ITERATION, BATCH_SIZE, EPOCHS, LOSS, DATASETS, EARLY_STOPPING, HP_FACTOR
+from config import result_path, ITERATION, BATCH_SIZE, EPOCHS, LOSS, DATASETS, EARLY_STOPPING
 from eval_script.utils import save_results
 from external_models.DeepLearning import simple_net, utils
 
@@ -27,33 +27,27 @@ def train_test(args_list):
     X_train_scaled = scaler.transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    comparable_f1 = -np.Infinity
+    # Model
+    model = simple_net.make_model(input_shape = (X_train_scaled.shape[1],), loss = LOSS[loss])
+    history = model.fit(
+        X_train_scaled,
+        y_train,
+        epochs=EPOCHS,
+        batch_size=BATCH_SIZE,
+        validation_split=0.2,
+        callbacks=[EARLY_STOPPING],
+        verbose=0)
+    
+    # Get predictions
+    y_pred = model.predict_classes(X_test_scaled).T[0]
 
-    for factor in HP_FACTOR:
+    f1 = f1_score(y_test, y_pred)
 
-        # Model
-        model = simple_net.make_model(input_shape = (X_train_scaled.shape[1],), loss = LOSS[loss], factor = factor)
-        history = model.fit(
-            X_train_scaled,
-            y_train,
-            epochs=EPOCHS,
-            batch_size=BATCH_SIZE,
-            validation_split=0.2,
-            callbacks=[EARLY_STOPPING],
-            verbose=0)
-        
-        # Get predictions
-        y_pred = model.predict_classes(X_test_scaled).T[0]
+    # Save
+    save_results(y_test, y_pred, classification_algorithm, dataset_name, iteration)
+    utils.save_model(model, classification_algorithm + '_' + dataset_name + '_' + iteration, dataset_name)
+    utils.save_history(history, classification_algorithm + '_' + dataset_name + '_' + iteration, dataset_name)
 
-        f1 = f1_score(y_test, y_pred)
-
-        if f1 > comparable_f1:
-            # Save
-            save_results(y_test, y_pred, classification_algorithm, dataset_name, iteration)
-            utils.save_model(model, classification_algorithm + '_' + dataset_name + '_' + iteration, dataset_name)
-            utils.save_history(history, classification_algorithm + '_' + dataset_name + '_' + iteration, dataset_name)
-
-            comparable_f1 = f1
 
 if __name__ == '__main__':
 
