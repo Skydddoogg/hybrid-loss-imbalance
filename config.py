@@ -49,10 +49,10 @@ DATASETS = {
             'n_features': 36,
             'n_samples': 6435
       },
-      'pen_digits': {
-            'n_features': 16,
-            'n_samples': 10992
-      },
+      # 'pen_digits': {
+      #       'n_features': 16,
+      #       'n_samples': 10992
+      # },
       'abalone': {
             'n_features': 10,
             'n_samples': 4177
@@ -117,30 +117,30 @@ DATASETS = {
             'n_features': 11,
             'n_samples': 4898
       },
-      'letter_img': {
-            'n_features': 16,
-            'n_samples': 20000
-      },
+      # 'letter_img': {
+      #       'n_features': 16,
+      #       'n_samples': 20000
+      # },
       'yeast_me2': {
             'n_features': 8,
             'n_samples': 1484
       },
-      'webpage': {
-            'n_features': 300,
-            'n_samples': 34780
-      },
+      # 'webpage': {
+      #       'n_features': 300,
+      #       'n_samples': 34780
+      # },
       'ozone_level': {
             'n_features': 72,
             'n_samples': 2536
       },
-      'mammography': {
-            'n_features': 6,
-            'n_samples': 11183
-      },
-      'protein_homo': {
-            'n_features': 74,
-            'n_samples': 145751
-      },
+      # 'mammography': {
+      #       'n_features': 6,
+      #       'n_samples': 11183
+      # },
+      # 'protein_homo': {
+      #       'n_features': 74,
+      #       'n_samples': 145751
+      # },
       'abalone_19': {
             'n_features': 10,
             'n_samples': 4177
