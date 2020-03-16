@@ -58,7 +58,7 @@ def create_report_dataframe(dataset_name, classification_algorithm, report_label
 
     return df
 
-def plot_performance_lines(df, dataset_name):
+def plot_performance_lines(df, dataset_name, n_features, n_samples):
         
     plt.figure(figsize = (10,7))
     idx = [x for x in range(1, ITERATION + 1)]
@@ -68,7 +68,7 @@ def plot_performance_lines(df, dataset_name):
     plt.xticks(range(len(idx)), idx)
     plt.xlabel('Round')
     plt.ylabel('F1 score')
-    plt.title(dataset_name)
+    plt.title("{0} - {1} features, {2} samples".format(dataset_name, n_features, n_samples))
     plt.legend()
     plt.savefig(os.path.join(viz_path, 'performance_report', 'comparison_graph_' + dataset_name + '.png'))
 
@@ -76,11 +76,13 @@ if __name__ == '__main__':
 
     for dataset_name in DATASETS:
         df_list = list()
+        n_features = DATASETS[dataset_name]['n_features']
+        n_samples = DATASETS[dataset_name]['n_samples']
         for loss in LOSS:
             df = create_report_dataframe(dataset_name, 'dl-' + loss, loss)
             df_list.append(df)
 
         concat_df = pd.concat(df_list, axis=1)
         concat_df = concat_df.loc[:,~concat_df.columns.duplicated()]
-        plot_performance_lines(concat_df, dataset_name)
+        plot_performance_lines(concat_df, dataset_name, n_features, n_samples)
 
