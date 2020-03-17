@@ -32,7 +32,7 @@ def train_test(args_list):
         epochs=EPOCHS,
         batch_size=BATCH_SIZE,
         validation_split=0.2,
-        callbacks=[tensorboard_callback],
+        callbacks=[EARLY_STOPPING, tensorboard_callback],
         verbose=0)
     
     # Get predictions
