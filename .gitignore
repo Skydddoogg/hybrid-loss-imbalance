@@ -140,3 +140,4 @@ external_datasets/
 *.png
 debugger.*
 *.sh
+*.zip
