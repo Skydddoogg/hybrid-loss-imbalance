@@ -12,6 +12,7 @@ import warnings
 from config import result_path, ITERATION, BATCH_SIZE, EPOCHS, LOSS, DATASETS, EARLY_STOPPING
 from eval_script.utils import save_results
 from external_models.DeepLearning import simple_net, utils
+import tensorflow as tf
 
 warnings.filterwarnings('ignore')
 
@@ -27,6 +28,9 @@ def train_test(args_list):
     X_train_scaled = scaler.transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
+    log_dir = "gs://sky-movo/class_imbalance/logs/fit/" + dataset_name + '/' + classification_algorithm	
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+
     # Model
     model = simple_net.make_model(input_shape = (X_train_scaled.shape[1],), loss = LOSS[loss])
     history = model.fit(
@@ -35,7 +39,7 @@ def train_test(args_list):
         epochs=EPOCHS,
         batch_size=BATCH_SIZE,
         validation_split=0.2,
-        callbacks=[EARLY_STOPPING],
+        callbacks=[EARLY_STOPPING, tensorboard_callback],
         verbose=0)
     
     # Get predictions
