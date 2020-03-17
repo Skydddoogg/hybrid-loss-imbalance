@@ -16,7 +16,7 @@ METRICS = [
       keras.metrics.AUC(name='auc'),
 ]
 EARLY_STOPPING = keras.callbacks.EarlyStopping(
-    monitor='val_auc', 
+    monitor='auc', 
     verbose=0,
     patience=10,
     mode='max',
