@@ -21,6 +21,9 @@ def train_test(args_list):
     X_train, X_test, y_train, y_test = get_splitted_data(dataset_name, reduction_ratio)
     # X_train, X_test, y_train, y_test = get_mocked_imbalanced_data(n_samples = 100, n_features = 5, neg_ratio = 0.9)
 
+    log_dir = "gs://sky-movo/class_imbalance/logs/fit/" + dataset_name + '/' + classification_algorithm
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+
     # Model
     model = image_network.make_model(input_shape = (X_train.shape[1], X_train.shape[2], X_train.shape[3]), loss = LOSS[loss])
     history = model.fit(
@@ -29,8 +32,8 @@ def train_test(args_list):
         epochs=EPOCHS,
         batch_size=BATCH_SIZE,
         validation_split=0.2,
-        callbacks=[EARLY_STOPPING],
-        verbose=1)
+        callbacks=[EARLY_STOPPING,  tensorboard_callback],
+        verbose=0)
     
     # Get predictions
     y_pred = model.predict_classes(X_test).T[0]
