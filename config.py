@@ -16,10 +16,10 @@ METRICS = [
       keras.metrics.AUC(name='auc'),
 ]
 EARLY_STOPPING = keras.callbacks.EarlyStopping(
-    monitor='auc', 
+    monitor='loss', 
     verbose=0,
-    patience=10,
-    mode='max',
+    patience=5,
+    mode='min',
     restore_best_weights=True)
 LR = 1e-3
 LOSS = {

@@ -255,7 +255,7 @@ class Hybrid(object):
         positive_loss = tf.where(tf.equal(n_positive, 0), 0.0, K.mean(positive_y_true * positive_pos_loss + (1 - positive_y_true) * positive_neg_loss))
         negative_loss = tf.where(tf.equal(n_negative, 0), 0.0, K.mean(negative_y_true * negative_pos_loss + (1 - negative_y_true) * negative_neg_loss))
 
-        loss = K.mean(positive_loss + negative_loss)
+        loss = positive_loss + negative_loss
 
         return loss
 
@@ -301,6 +301,6 @@ class Hybrid(object):
         positive_loss = tf.where(tf.equal(n_positive, 0), 0.0, K.mean(positive_y_true * positive_pos_loss + (1 - positive_y_true) * positive_neg_loss))
         negative_loss = tf.where(tf.equal(n_negative, 0), 0.0, K.mean(negative_y_true * negative_pos_loss + (1 - negative_y_true) * negative_neg_loss))
 
-        loss = K.mean(positive_loss + negative_loss)
+        loss = positive_loss + negative_loss
 
         return loss
