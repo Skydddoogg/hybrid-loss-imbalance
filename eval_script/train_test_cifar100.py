@@ -21,7 +21,7 @@ def train_test(args_list):
     X_train, X_test, y_train, y_test = get_splitted_data(dataset_name, reduction_ratio)
     # X_train, X_test, y_train, y_test = get_mocked_imbalanced_data(n_samples = 100, n_features = 5, neg_ratio = 0.9)
 
-    log_dir = "gs://sky-movo/class_imbalance/logs/fit/" + dataset_name + '/' + classification_algorithm
+    log_dir = "gs://sky-movo/class_imbalance/cifar100_logs/fit/" + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
     # Model
