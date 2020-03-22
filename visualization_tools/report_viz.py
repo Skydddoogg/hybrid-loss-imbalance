@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings("ignore")
 
-from config import result_path, ITERATION, DATASETS, LOSS, viz_path
+from config import ITERATION, DATASETS, LOSS, viz_path
 
 def create_report_dataframe(dataset_name, classification_algorithm, report_label):
 
@@ -54,7 +54,10 @@ def create_report_dataframe(dataset_name, classification_algorithm, report_label
     df = pd.DataFrame (data, columns = data.keys())
     plt.title("{0} - {1}".format(dataset_name, report_label))
 
-    plt.savefig(os.path.join(viz_path, 'performance_report', 'confusion_mat_' + classification_algorithm + '_' + dataset_name + '.png'))
+    if not os.path.isdir(os.path.join(viz_path, 'performance_report', args.result_folder)):
+        os.mkdir(os.path.join(viz_path, 'performance_report', args.result_folder))
+
+    plt.savefig(os.path.join(viz_path, 'performance_report', args.result_folder, 'confusion_mat_' + classification_algorithm + '_' + dataset_name + '.png'))
 
     return df
 
@@ -70,9 +73,15 @@ def plot_performance_lines(df, dataset_name, n_features, n_samples):
     plt.ylabel('F1 score')
     plt.title("{0} - {1} features, {2} samples".format(dataset_name, n_features, n_samples))
     plt.legend()
-    plt.savefig(os.path.join(viz_path, 'performance_report', 'comparison_graph_' + dataset_name + '.png'))
+    plt.savefig(os.path.join(viz_path, 'performance_report', args.result_folder, 'comparison_graph_' + dataset_name + '.png'))
 
 if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("result_folder")
+    args = parser.parse_args()
+
+    result_path = '../' + args.result_folder
 
     for dataset_name in DATASETS:
         df_list = list()
