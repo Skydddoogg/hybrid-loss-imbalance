@@ -73,6 +73,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     args_list = [str(args.reduction_ratio), args.dataset, 'dl-' + args.loss, args.loss]
-    train_test(args)
+    train_test(args_list)
 
     print("Completed evaluating on {0} at {1} ratio with {2} loss".format(args.dataset, args.reduction_ratio, args.loss))
