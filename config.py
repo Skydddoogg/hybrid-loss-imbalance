@@ -26,7 +26,7 @@ LR = 1e-3
 LOSS = {
       'BCE': custom_loss.CrossEntropy().binary_crossentropy,
       'Balanced-BCE': custom_loss.CrossEntropy().balanced_binary_crossentropy,
-      # 'MSE': custom_loss.MeanSquareError().mean_square_error,
+      'MSE': custom_loss.MeanSquareError().mean_square_error,
       'MFE': custom_loss.MeanFalseError().mean_false_error,
       'Balanced-MFE': custom_loss.MeanFalseError().mean_squared_false_error,
       'FL': custom_loss.Focal().focal,

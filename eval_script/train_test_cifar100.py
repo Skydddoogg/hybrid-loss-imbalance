@@ -65,15 +65,21 @@ def train_test(args_list):
 
 if __name__ == '__main__':
 
+    # Argument management
+    parser = argparse.ArgumentParser()
+    parser.add_argument("loss")
+    args = parser.parse_args()
+
     count = 1
 
     DATASETS = ['Tree1_cifar100', 'Tree2_cifar100']
     REDUCTION_RATIO = [20, 10, 5]
 
     for dataset in DATASETS:
-        for loss in LOSS:
-            args_list = [[str(reduction_ratio), dataset, 'dl-' + loss, loss] for reduction_ratio in REDUCTION_RATIO]
-            for args in args_list:
-                train_test(args)
+
+        args_list = [[str(reduction_ratio), dataset, 'dl-' + args.loss, args.loss] for reduction_ratio in REDUCTION_RATIO]
+        for args in args_list:
+            train_test(args)
+
         print("Completed evaluating on {0} ({1}/{2})".format(dataset, count, len(DATASETS)))
         count += 1
