@@ -78,7 +78,7 @@ class MeanSquareError(object):
 
 class CrossEntropy(object):
 
-    def __init__(self, alpha = 0.7, label_smoothing = 0):
+    def __init__(self, alpha = 0.25, label_smoothing = 0):
         self.alpha = alpha
         self.label_smoothing = label_smoothing
 
@@ -143,7 +143,7 @@ class CrossEntropy(object):
 
 class Focal(object):
 
-    def __init__(self, gamma = 2, alpha = 0.7, label_smoothing = 0):
+    def __init__(self, gamma = 2, alpha = 0.25, label_smoothing = 0):
         self.gamma = gamma
         self.alpha = alpha
         self.label_smoothing = label_smoothing
@@ -208,7 +208,7 @@ class Focal(object):
 
 class Hybrid(object):
 
-    def __init__(self, gamma = 2, alpha = 0.7, label_smoothing = 0):
+    def __init__(self, gamma = 2, alpha = 0.25, label_smoothing = 0):
         self.gamma = gamma
         self.alpha = alpha
         self.label_smoothing = label_smoothing

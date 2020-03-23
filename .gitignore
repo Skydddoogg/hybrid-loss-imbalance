@@ -134,6 +134,7 @@ train/
 results/
 external_models/CSSVM/
 external_datasets/
+eval_script/model_initial_weights
 
 # Custom file
 *.ipynb

@@ -21,22 +21,41 @@ def train_test(args_list):
     X_train, X_test, y_train, y_test = get_splitted_data(dataset_name, reduction_ratio)
     # X_train, X_test, y_train, y_test = get_mocked_imbalanced_data(n_samples = 100, n_features = 5, neg_ratio = 0.9)
 
-    log_dir = "gs://sky-movo/class_imbalance/cifar100_logs/fit/" + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
-    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    # log_dir = "gs://sky-movo/class_imbalance/cifar100_logs/fit/" + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
+    # log_dir = "cifar100_logs/fit/" + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
+    # tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
     # Model
     model = image_network.make_model(input_shape = (X_train.shape[1], X_train.shape[2], X_train.shape[3]), loss = LOSS[loss])
+
+    initial_weight_path = os.path.join('model_initial_weights')
+
+    if not os.path.isdir(initial_weight_path):
+        os.mkdir(initial_weight_path)
+        os.mkdir(os.path.join(initial_weight_path, 'image_network'))
+
+        utils.make_initial_weights(model, os.path.join(initial_weight_path, 'image_network', 'initial_weights'))
+
+    model.load_weights(os.path.join(initial_weight_path, 'image_network', 'initial_weights', 'initial_weights'))
     history = model.fit(
         X_train,
         y_train,
         epochs=EPOCHS,
         batch_size=BATCH_SIZE,
         validation_split=0.2,
-        callbacks=[EARLY_STOPPING, tensorboard_callback],
+        callbacks=[EARLY_STOPPING],
         verbose=0)
     
     # Get predictions
     y_pred = model.predict_classes(X_test).T[0]
+
+    check = np.all(np.array(y_pred) == 0)
+
+    print(y_pred)
+    print(check)
+
+    if (np.all(np.array(y_pred) == 0)) or (np.all(np.array(y_pred) == 1)):
+        train_test(args_list)
 
     # Save
     save_results(y_test, y_pred, classification_algorithm, dataset_name, reduction_ratio)

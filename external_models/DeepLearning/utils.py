@@ -13,3 +13,7 @@ def save_history(history, model_name, dataset_name):
 
 def save_model(model, model_name, dataset_name):
     model.save(os.path.join(result_path, dataset_name, 'model', model_name + '.h5'))
+
+def make_initial_weights(model, path):
+    initial_weights = os.path.join(path, 'initial_weights')
+    model.save_weights(initial_weights)
