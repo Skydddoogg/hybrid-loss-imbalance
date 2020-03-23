@@ -23,6 +23,13 @@ def get_reduced_data(X, y, reduction_ratio):
 
     return desired_X, desired_y
 
+def shuffle_Xy(X, y):
+    indices = np.array([i for i in range(y.shape[0])])
+    np.random.shuffle(indices)
+    X = X[indices]
+    y = y[indices]
+
+    return X, y
 
 if __name__ == "__main__":
 
@@ -32,7 +39,7 @@ if __name__ == "__main__":
     test_ds = tfds.load(dataset_name, split=tfds.Split.TEST, batch_size=-1)
     numpy_train_ds = tfds.as_numpy(train_ds)
     numpy_test_ds = tfds.as_numpy(test_ds)
-    X_train, y_train, X_test, y_test = numpy_train_ds["image"], numpy_train_ds["label"], numpy_test_ds['image'], numpy_test_ds['label']
+    X_train, y_train, X_test, y_test = numpy_train_ds["image"] / 255.0, numpy_train_ds["label"], numpy_test_ds['image'] / 255.0, numpy_test_ds['label']
 
     ex_dataset = {
         'Tree1': {
@@ -81,6 +88,9 @@ if __name__ == "__main__":
 
             combined_X_train, combined_y_train = np.concatenate((negative_class_X_train, reduced_positive_class_X_train), axis=0), np.concatenate((negative_class_y_train, reduced_positive_class_y_train), axis=0)
             combined_X_test, combined_y_test = np.concatenate((negative_class_X_test, reduced_positive_class_X_test), axis=0), np.concatenate((negative_class_y_test, reduced_positive_class_y_test), axis=0)
+
+            combined_X_train, combined_y_train = shuffle_Xy(combined_X_train, combined_y_train)
+            combined_X_test, combined_y_test = shuffle_Xy(combined_X_test, combined_y_test)
 
             np.save(train_folder_path + '/X/' + str(ratio) + '.npy', combined_X_train)
             np.save(test_folder_path + '/X/' + str(ratio) + '.npy', combined_X_test)
