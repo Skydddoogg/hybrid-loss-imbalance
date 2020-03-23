@@ -7,12 +7,15 @@ from sklearn import preprocessing
 import os
 import argparse
 import warnings
-from config import result_path, BATCH_SIZE, EPOCHS, LOSS, EARLY_STOPPING
+from config import result_path, BATCH_SIZE, EPOCHS, LOSS, EARLY_STOPPING, SEED
 from eval_script.utils import save_results
 from external_models.DeepLearning import image_network, utils
 import tensorflow as tf
 
 warnings.filterwarnings('ignore')
+
+os.environ['TF_DETERMINISTIC_OPS'] = '1'
+tf.random.set_seed(SEED)
 
 def train_test(args_list):
 
