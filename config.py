@@ -6,7 +6,7 @@ import os
 ITERATION = 1
 BATCH_SIZE = 16
 EPOCHS = 500
-SEED = 50
+SEED = 10
 METRICS = [
       keras.metrics.TruePositives(name='tp'),
       keras.metrics.FalsePositives(name='fp'),
@@ -23,7 +23,7 @@ EARLY_STOPPING = keras.callbacks.EarlyStopping(
     patience=5,
     mode='min',
     restore_best_weights=True)
-LR = 1e-5
+LR = 1e-6
 LOSS = {
       # 'BCE': custom_loss.CrossEntropy().binary_crossentropy,
       'Balanced-BCE': custom_loss.CrossEntropy().balanced_binary_crossentropy,

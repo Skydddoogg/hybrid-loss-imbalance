@@ -52,9 +52,8 @@ def train_test(args_list):
     # Get predictions
     y_pred = model.predict_classes(X_test).T[0]
 
-    print(y_pred)
-
     if (np.all(np.array(y_pred) == 0)) or (np.all(np.array(y_pred) == 1)):
+        print("Got the fucking result...")
         train_test(args_list)
 
     # Save
