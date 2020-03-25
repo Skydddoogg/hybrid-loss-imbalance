@@ -9,7 +9,7 @@ import argparse
 import warnings
 from config import result_path, BATCH_SIZE, EPOCHS, LOSS, EARLY_STOPPING, SEED
 from eval_script.utils import save_results
-from external_models.DeepLearning import image_network, utils
+from external_models.DeepLearning import resnetV2, utils
 import tensorflow as tf
 
 warnings.filterwarnings('ignore')
@@ -29,17 +29,17 @@ def train_test(args_list):
     # tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
     # Model
-    model = image_network.make_model(input_shape = (X_train.shape[1], X_train.shape[2], X_train.shape[3]), loss = LOSS[loss])
+    model = resnetV2.make_model(input_shape = (X_train.shape[1], X_train.shape[2], X_train.shape[3]), loss = LOSS[loss])
 
     initial_weight_path = os.path.join('model_initial_weights')
 
     if not os.path.isdir(initial_weight_path):
         os.mkdir(initial_weight_path)
-        os.mkdir(os.path.join(initial_weight_path, 'image_network'))
+        os.mkdir(os.path.join(initial_weight_path, 'resnetV2'))
 
-        utils.make_initial_weights(model, os.path.join(initial_weight_path, 'image_network', 'initial_weights'))
+        utils.make_initial_weights(model, os.path.join(initial_weight_path, 'resnetV2', 'initial_weights'))
 
-    model.load_weights(os.path.join(initial_weight_path, 'image_network', 'initial_weights', 'initial_weights'))
+    model.load_weights(os.path.join(initial_weight_path, 'resnetV2', 'initial_weights', 'initial_weights'))
     history = model.fit(
         X_train,
         y_train,
@@ -52,9 +52,9 @@ def train_test(args_list):
     # Get predictions
     y_pred = model.predict_classes(X_test).T[0]
 
-    if (np.all(np.array(y_pred) == 0)) or (np.all(np.array(y_pred) == 1)):
-        print("Got the fucking result...")
-        train_test(args_list)
+    # if (np.all(np.array(y_pred) == 0)) or (np.all(np.array(y_pred) == 1)):
+    #     print("Got the fucking result...")
+    #     train_test(args_list)
 
     # Save
     save_results(y_test, y_pred, classification_algorithm, dataset_name, reduction_ratio)
