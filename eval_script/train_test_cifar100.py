@@ -27,10 +27,10 @@ def train_test(args_list):
     X_train, X_test, X_valid, y_train, y_test, y_valid = get_splitted_data(dataset_name, reduction_ratio, validation = True)
     # X_train, X_test, y_train, y_test = get_mocked_imbalanced_data(n_samples = 100, n_features = 5, neg_ratio = 0.9)
 
-    # log_dir = "gs://sky-movo/class_imbalance/cifar100_logs/fit/" + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
-    # log_dir = "cifar100_logs/fit/" + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
-    # tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
     # Prepare callbacks
+    log_dir = "gs://sky-movo/class_imbalance/cifar100_logs/fit/" + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
+    # log_dir = "cifar100_logs/fit/" + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
     lr_scheduler = LearningRateScheduler(utils.lr_schedule)
     lr_reducer = ReduceLROnPlateau(factor=np.sqrt(0.1),
@@ -56,7 +56,7 @@ def train_test(args_list):
         epochs=EPOCHS,
         batch_size=BATCH_SIZE,
         validation_data=(X_valid, y_valid),
-        callbacks=[EARLY_STOPPING, lr_scheduler, lr_reducer],
+        callbacks=[EARLY_STOPPING, lr_scheduler, lr_reducer, tensorboard_callback],
         verbose=1)
     
     # Get predictions
@@ -77,8 +77,10 @@ def train_test(args_list):
 
 if __name__ == '__main__':
 
-    DATASETS = ['Tree1_cifar100', 'Tree2_cifar100']
-    REDUCTION_RATIO = [20, 10, 5]
+    # DATASETS = ['Tree1_cifar100', 'Tree2_cifar100']
+    # REDUCTION_RATIO = [20, 10, 5]
+    DATASETS = ['Tree1_cifar100']
+    REDUCTION_RATIO = [20]
 
     count = 1
 
