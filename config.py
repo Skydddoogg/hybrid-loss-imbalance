@@ -17,13 +17,13 @@ METRICS = [
       keras.metrics.AUC(name='auc'),
 ]
 EARLY_STOPPING = keras.callbacks.EarlyStopping(
-    monitor='val_loss', 
+    monitor='loss', 
 #     min_delta=1e-3,
     verbose=0,
     patience=5,
     mode='min',
     restore_best_weights=True)
-LR = 1e-5
+LR = 1e-6
 LOSS = {
       # 'BCE': custom_loss.CrossEntropy().binary_crossentropy,
       'Balanced-BCE': custom_loss.CrossEntropy().balanced_binary_crossentropy,

@@ -47,7 +47,7 @@ def train_test(args_list):
         batch_size=BATCH_SIZE,
         validation_data=(X_valid, y_valid),
         callbacks=[EARLY_STOPPING],
-        verbose=0)
+        verbose=1)
     
     # Get predictions
     # y_pred = model.predict_classes(X_test).T[0]
