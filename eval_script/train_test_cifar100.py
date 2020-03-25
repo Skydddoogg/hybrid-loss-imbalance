@@ -53,6 +53,8 @@ def train_test(args_list):
     # y_pred = model.predict_classes(X_test).T[0]
     y_pred = np.argmax(model.predict(X_test), axis=1)
 
+    print(y_pred)
+
     # if (np.all(np.array(y_pred) == 0)) or (np.all(np.array(y_pred) == 1)):
     #     print("Got the fucking result...")
     #     train_test(args_list)
