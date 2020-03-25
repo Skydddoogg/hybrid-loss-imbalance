@@ -7,10 +7,13 @@ from sklearn import preprocessing
 import os
 import argparse
 import warnings
-from config import result_path, BATCH_SIZE, EPOCHS, LOSS, EARLY_STOPPING, SEED
+from config import BATCH_SIZE, EPOCHS, LOSS, EARLY_STOPPING, SEED
+from config_path import result_path
 from eval_script.utils import save_results
 from external_models.DeepLearning import resnetV2, utils
 import tensorflow as tf
+from tensorflow.keras.callbacks import LearningRateScheduler
+from tensorflow.keras.callbacks import ReduceLROnPlateau
 
 warnings.filterwarnings('ignore')
 
@@ -27,6 +30,13 @@ def train_test(args_list):
     # log_dir = "gs://sky-movo/class_imbalance/cifar100_logs/fit/" + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
     # log_dir = "cifar100_logs/fit/" + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
     # tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    # Prepare callbacks
+
+    lr_scheduler = LearningRateScheduler(utils.lr_schedule)
+    lr_reducer = ReduceLROnPlateau(factor=np.sqrt(0.1),
+                                cooldown=0,
+                                patience=5,
+                                min_lr=0.5e-6)
 
     # Model
     model = resnetV2.make_model(input_shape = (X_train.shape[1], X_train.shape[2], X_train.shape[3]), loss = LOSS[loss])
@@ -46,7 +56,7 @@ def train_test(args_list):
         epochs=EPOCHS,
         batch_size=BATCH_SIZE,
         validation_data=(X_valid, y_valid),
-        callbacks=[EARLY_STOPPING],
+        callbacks=[EARLY_STOPPING, lr_scheduler, lr_reducer],
         verbose=1)
     
     # Get predictions

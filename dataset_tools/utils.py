@@ -7,7 +7,7 @@ from imblearn.datasets import fetch_datasets, make_imbalance
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import make_classification
 from collections import Counter
-from config import train_set_path, test_set_path
+from config_path import train_set_path, test_set_path
 
 def split_train_test(dataset_name, iteration):
     

@@ -1,6 +1,6 @@
 from tensorflow import keras
 from custom_functions import custom_loss
-import os
+from external_models.DeepLearning.utils import lr_schedule
 
 # Constant
 ITERATION = 1
@@ -23,7 +23,6 @@ EARLY_STOPPING = keras.callbacks.EarlyStopping(
     patience=5,
     mode='min',
     restore_best_weights=True)
-LR = 1e-6
 LOSS = {
       # 'BCE': custom_loss.CrossEntropy().binary_crossentropy,
       'Balanced-BCE': custom_loss.CrossEntropy().balanced_binary_crossentropy,
@@ -35,7 +34,7 @@ LOSS = {
       'Hybrid-MFE-FL': custom_loss.Hybrid().hybrid_mfe_fl,
       'Balanced-Hybrid-MFE-FL': custom_loss.Hybrid().balanced_hybrid_mfe_fl
 }
-OPTIMIZER = keras.optimizers.Adam(lr=LR)
+OPTIMIZER = keras.optimizers.Adam(lr=lr_schedule(0))
 
 # Source
 DATASETS = {
@@ -148,10 +147,3 @@ DATASETS = {
             'n_samples': 4177
       },
 }
-
-# Path
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-train_set_path = os.path.join(ROOT_DIR, 'dataset', 'train')
-test_set_path = os.path.join(ROOT_DIR, 'dataset', 'test')
-result_path = os.path.join(ROOT_DIR, 'results')
-viz_path = os.path.join(ROOT_DIR, 'visualizations')

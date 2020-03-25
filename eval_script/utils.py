@@ -1,6 +1,6 @@
 import numpy as np
 import os
-from config import result_path
+from config_path import result_path
 
 def save_results(y_true, y_pred, classification_algorithm, dataset_name, iteration):
     result_path_dataset = os.path.join(result_path, dataset_name)

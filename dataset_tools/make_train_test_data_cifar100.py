@@ -3,7 +3,7 @@ sys.path.append("../")
 
 import tensorflow_datasets as tfds
 import numpy as np
-from config import train_set_path, test_set_path
+from config_path import train_set_path, test_set_path
 import os
 
 def get_data_for_one_class(X, y, _class):
