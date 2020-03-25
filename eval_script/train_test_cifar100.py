@@ -21,7 +21,7 @@ def train_test(args_list):
 
     reduction_ratio, dataset_name, classification_algorithm, loss = args_list
 
-    X_train, X_test, y_train, y_test = get_splitted_data(dataset_name, reduction_ratio)
+    X_train, X_test, X_valid, y_train, y_test, y_valid = get_splitted_data(dataset_name, reduction_ratio, validation = True)
     # X_train, X_test, y_train, y_test = get_mocked_imbalanced_data(n_samples = 100, n_features = 5, neg_ratio = 0.9)
 
     # log_dir = "gs://sky-movo/class_imbalance/cifar100_logs/fit/" + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
@@ -45,12 +45,13 @@ def train_test(args_list):
         y_train,
         epochs=EPOCHS,
         batch_size=BATCH_SIZE,
-        validation_split=0.2,
+        validation_data=(X_valid, y_valid),
         callbacks=[EARLY_STOPPING],
         verbose=0)
     
     # Get predictions
-    y_pred = model.predict_classes(X_test).T[0]
+    # y_pred = model.predict_classes(X_test).T[0]
+    y_pred = np.argmax(model.predict(X_test), axis=1)
 
     # if (np.all(np.array(y_pred) == 0)) or (np.all(np.array(y_pred) == 1)):
     #     print("Got the fucking result...")
@@ -75,7 +76,9 @@ if __name__ == '__main__':
 
             args_list = [[str(reduction_ratio), dataset, 'dl-' + loss, loss] for reduction_ratio in REDUCTION_RATIO]
             for args in args_list:
+                print('.', end='')
                 train_test(args)
 
+        print('')
         print("Completed evaluating on {0} ({1}/{2})".format(dataset, count, len(DATASETS)))
         count += 1

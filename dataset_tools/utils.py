@@ -45,12 +45,16 @@ def get_Xy(data):
     y[y == -1] = 0
     return X, y
 
-def get_splitted_data(dataset, iteration):
+def get_splitted_data(dataset, iteration, validation = False):
 
     X_train = np.load(os.path.join(train_set_path, dataset, 'X', iteration + '.npy'))
     X_test = np.load(os.path.join(test_set_path, dataset, 'X', iteration + '.npy'))
     y_train = np.load(os.path.join(train_set_path, dataset, 'y', iteration + '.npy'))
     y_test = np.load(os.path.join(test_set_path, dataset, 'y', iteration + '.npy'))
+
+    if validation:
+        X_train, X_valid, y_train, y_valid = train_test_split(X_train, y_train, test_size = 0.20, random_state=0, stratify=y_train)
+        return X_train, X_test, X_valid, y_train, y_test, y_valid
 
     return X_train, X_test, y_train, y_test
 
