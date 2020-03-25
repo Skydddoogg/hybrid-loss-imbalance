@@ -15,7 +15,6 @@ def make_model(input_shape, loss, metrics = METRICS, optimizer = OPTIMIZER, outp
         keras.layers.Dense(100, activation='relu'),
         keras.layers.BatchNormalization(),
         keras.layers.Dense(10, activation='relu'),
-        keras.layers.BatchNormalization(),
         keras.layers.Dense(1, activation='sigmoid', bias_initializer=output_bias),
     ])
 
