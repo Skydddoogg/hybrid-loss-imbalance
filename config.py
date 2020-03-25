@@ -23,7 +23,7 @@ EARLY_STOPPING = keras.callbacks.EarlyStopping(
     patience=5,
     mode='min',
     restore_best_weights=True)
-LR = 1e-5
+LR = 1e-7
 LOSS = {
       # 'BCE': custom_loss.CrossEntropy().binary_crossentropy,
       'Balanced-BCE': custom_loss.CrossEntropy().balanced_binary_crossentropy,
