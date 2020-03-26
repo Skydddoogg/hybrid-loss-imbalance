@@ -7,7 +7,7 @@ from sklearn import preprocessing
 import os
 import argparse
 import warnings
-from config import BATCH_SIZE, EPOCHS, LOSS, EARLY_STOPPING, SEED
+from config import BATCH_SIZE, EPOCHS, LOSS, EARLY_STOPPING, SEED, METRICS
 from config_path import result_path
 from eval_script.utils import save_results
 from external_models.DeepLearning import resnetV2, utils
@@ -39,7 +39,12 @@ def train_test(args_list):
                                 min_lr=0.5e-6)
 
     # Model
-    model = resnetV2.make_model(input_shape = (X_train.shape[1], X_train.shape[2], X_train.shape[3]), loss = LOSS[loss])
+    model = resnetV2.make_model(input_shape = (X_train.shape[1], X_train.shape[2], X_train.shape[3]))
+
+    model.compile(
+        optimizer=tf.keras.optimizers.Adam(lr=utils.lr_schedule(0)),
+        loss=LOSS[loss],
+        metrics=METRICS)
 
     initial_weight_path = os.path.join('model_initial_weights')
 
