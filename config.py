@@ -1,6 +1,7 @@
 from tensorflow import keras
 from custom_functions import custom_loss
 from external_models.DeepLearning.utils import lr_schedule
+import tensorflow_addons as tfa
 
 # Constant
 ITERATION = 1
@@ -15,10 +16,11 @@ METRICS = [
       keras.metrics.Precision(name='precision'),
       keras.metrics.Recall(name='recall'),
       keras.metrics.AUC(name='auc'),
+      tfa.metrics.F1Score(name='f1'),
 ]
 EARLY_STOPPING = keras.callbacks.EarlyStopping(
     monitor='loss', 
-#     min_delta=1e-3,
+    min_delta=1e-3,
     verbose=0,
     patience=5,
     mode='min',
