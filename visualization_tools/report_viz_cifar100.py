@@ -13,7 +13,8 @@ import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings("ignore")
 
-from config import result_path, LOSS, viz_path
+from config_path import result_path, viz_path
+from config import LOSS
 
 def create_report(dataset_name, classification_algorithm, reduction_ratio):
 
