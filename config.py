@@ -1,7 +1,6 @@
 from tensorflow import keras
 from custom_functions import custom_loss
 from external_models.DeepLearning.utils import lr_schedule
-import tensorflow_addons as tfa
 
 # Constant
 ITERATION = 1
@@ -9,17 +8,16 @@ BATCH_SIZE = 16
 EPOCHS = 500
 SEED = 10
 METRICS = [
-      # keras.metrics.TruePositives(name='tp'),
-      # keras.metrics.FalsePositives(name='fp'),
-      # keras.metrics.TrueNegatives(name='tn'),
-      # keras.metrics.FalseNegatives(name='fn'), 
-      # keras.metrics.Precision(name='precision'),
-      # keras.metrics.Recall(name='recall'),
+      keras.metrics.TruePositives(name='tp'),
+      keras.metrics.FalsePositives(name='fp'),
+      keras.metrics.TrueNegatives(name='tn'),
+      keras.metrics.FalseNegatives(name='fn'), 
+      keras.metrics.Precision(name='precision'),
+      keras.metrics.Recall(name='recall'),
       keras.metrics.AUC(name='auc'),
-      tfa.metrics.F1Score(num_classes = 2, name='f1'),
 ]
 EARLY_STOPPING = keras.callbacks.EarlyStopping(
-    monitor='loss', 
+    monitor='val_loss', 
     min_delta=1e-3,
     verbose=0,
     patience=5,
