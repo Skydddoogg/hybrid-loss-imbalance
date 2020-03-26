@@ -61,7 +61,11 @@ def train_test(args_list):
     
     # Get predictions
     # y_pred = model.predict_classes(X_test).T[0]
-    y_pred = np.argmax(model.predict(X_test), axis=1)
+    y_pred = model.predict(X_test)
+    y_pred = np.reshape(y_pred, (y_pred.shape[0],))
+
+    y_pred[y_pred > 0.5] = 1
+    y_pred[y_pred <= 0.5] = 0
 
     print(y_pred)
 
