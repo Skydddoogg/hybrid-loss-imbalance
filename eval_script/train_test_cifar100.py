@@ -72,7 +72,7 @@ def train_test(args_list):
     y_pred[y_pred > 0.5] = 1
     y_pred[y_pred <= 0.5] = 0
 
-    print(y_pred)
+    print(y_pred, loss)
 
     # if (np.all(np.array(y_pred) == 0)) or (np.all(np.array(y_pred) == 1)):
     #     print("Got the fucking result...")
