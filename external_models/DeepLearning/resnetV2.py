@@ -50,7 +50,7 @@ def resnet_layer(inputs,
         x = conv(x)
     return x
 
-def make_model(input_shape, loss, metrics = METRICS, optimizer = OPTIMIZER, depth = 29, num_classes = 1):
+def make_model(input_shape, depth = 29, num_classes = 1):
     """ResNet Version 2 Model builder [b]
 
     Stacks of (1 x 1)-(3 x 3)-(1 x 1) BN-ReLU-Conv2D or also known as
@@ -144,9 +144,9 @@ def make_model(input_shape, loss, metrics = METRICS, optimizer = OPTIMIZER, dept
     # Instantiate model.
     model = Model(inputs=inputs, outputs=outputs)
 
-    model.compile(
-        optimizer=optimizer,
-        loss=loss,
-        metrics=metrics)
+    # model.compile(
+    #     optimizer=optimizer,
+    #     loss=loss,
+    #     metrics=metrics)
 
     return model
