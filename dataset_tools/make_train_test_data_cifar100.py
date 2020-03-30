@@ -6,14 +6,24 @@ import numpy as np
 from config_path import train_set_path, test_set_path
 import os
 
-def get_data_for_one_class(X, y, _class):
+def get_data_for_one_class(X, y, _classes):
 
-    _class_indices = np.where(y == _class)[0]
+    _class_indices = []
+    for _class in _classes:
+
+        _class_indices += list(np.where(y == _class)[0])
 
     desired_X = X[_class_indices]
     desired_y = y[_class_indices]
 
     return desired_X, desired_y
+
+def make_new_label(y, classes, target):
+
+    for _class in classes:
+        y[y == _class] = target
+
+    return y
 
 def get_reduced_data(X, y, reduction_ratio):
 
@@ -42,13 +52,17 @@ if __name__ == "__main__":
     X_train, y_train, X_test, y_test = numpy_train_ds["image"] / 255.0, numpy_train_ds["label"], numpy_test_ds['image'] / 255.0, numpy_test_ds['label']
 
     ex_dataset = {
-        'Tree1': {
-            'positive_class': 47, # 47 is maple tree
-            'negative_class': 52 # 52 is oak tree
-        },
-        'Tree2': {
-            'positive_class': 47, # 47 is maple tree
-            'negative_class': 56 # 56 is palm tree
+        # 'Tree1': {
+        #     'positive_class': [47], # 47 is maple tree
+        #     'negative_class': [52] # 52 is oak tree
+        # },
+        # 'Tree2': {
+        #     'positive_class': [47], # 47 is maple tree
+        #     'negative_class': [56] # 56 is palm tree
+        # },
+        'Household':{
+            'positive_class': [22, 39, 40, 86, 87],
+            'negative_class': [5, 20, 25, 84, 94]
         }
     }
 
@@ -59,13 +73,13 @@ if __name__ == "__main__":
 
         negative_class_X_train, negative_class_y_train = get_data_for_one_class(X_train, y_train, negative_class)
         negative_class_X_test, negative_class_y_test = get_data_for_one_class(X_test, y_test, negative_class)
-        negative_class_y_train[negative_class_y_train == negative_class] = 0
-        negative_class_y_test[negative_class_y_test == negative_class] = 0
+        negative_class_y_train = make_new_label(negative_class_y_train, negative_class, 0)
+        negative_class_y_test = make_new_label(negative_class_y_test, negative_class, 0)
 
         positive_class_X_train, positive_class_y_train = get_data_for_one_class(X_train, y_train, positive_class)
         positive_class_X_test, positive_class_y_test = get_data_for_one_class(X_test, y_test, positive_class)
-        positive_class_y_train[positive_class_y_train == positive_class] = 1
-        positive_class_y_test[positive_class_y_test == positive_class] = 1
+        positive_class_y_train = make_new_label(positive_class_y_train, positive_class, 1)
+        positive_class_y_test = make_new_label(positive_class_y_test, positive_class, 1)
 
         train_folder_path = os.path.join(train_set_path, ex + '_' + dataset_name)
         test_folder_path = os.path.join(test_set_path, ex + '_' + dataset_name)
