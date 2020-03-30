@@ -86,7 +86,7 @@ def train_test(args_list):
 
 if __name__ == '__main__':
 
-    DATASETS = ['Tree1_cifar100', 'Tree2_cifar100']
+    DATASETS = ['Household_cifar100', 'Tree1_cifar100', 'Tree2_cifar100']
     REDUCTION_RATIO = [20, 10, 5]
 
     count = 1
