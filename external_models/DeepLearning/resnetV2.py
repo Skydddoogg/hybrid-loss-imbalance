@@ -3,8 +3,7 @@ from tensorflow.keras.layers import AveragePooling2D, Input, Flatten
 from tensorflow.keras.regularizers import l2
 from tensorflow import keras
 from tensorflow.keras.models import Model
-
-from config import LOSS, METRICS, OPTIMIZER
+import numpy as np
 
 def resnet_layer(inputs,
                  num_filters=16,
@@ -75,6 +74,15 @@ def make_model(input_shape, depth = 29, num_classes = 1):
     # Returns
         model (Model): Keras model instance
     """
+
+    def get_prediction(model, X_test):
+        y_pred = model.predict(X_test)
+        y_pred = np.reshape(y_pred, (y_pred.shape[0],))
+
+        y_pred[y_pred > 0.5] = 1
+        y_pred[y_pred <= 0.5] = 0
+        return y_pred
+
     if (depth - 2) % 9 != 0:
         raise ValueError('depth should be 9n+2 (eg 56 or 110 in [b])')
     # Start model definition.
@@ -149,4 +157,4 @@ def make_model(input_shape, depth = 29, num_classes = 1):
     #     loss=loss,
     #     metrics=metrics)
 
-    return model
+    return model, get_prediction

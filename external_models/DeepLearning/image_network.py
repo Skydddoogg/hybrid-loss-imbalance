@@ -1,9 +1,12 @@
 import tensorflow as tf
 from tensorflow import keras
+import numpy as np
 
-from config import LOSS, METRICS, OPTIMIZER
+def make_model(input_shape, output_bias = None):
 
-def make_model(input_shape, loss, metrics = METRICS, optimizer = OPTIMIZER, output_bias = None):
+    def get_prediction(model, X_test):
+        y_pred = model.predict_classes(X_test).T[0]
+        return y_pred
 
     if output_bias is not None:
         output_bias = tf.keras.initializers.Constant(output_bias)
@@ -19,9 +22,9 @@ def make_model(input_shape, loss, metrics = METRICS, optimizer = OPTIMIZER, outp
         keras.layers.Dense(1, activation='sigmoid', bias_initializer=output_bias),
     ])
 
-    model.compile(
-        optimizer=optimizer,
-        loss=loss,
-        metrics=metrics)
+    # model.compile(
+    #     optimizer=optimizer,
+    #     loss=loss,
+    #     metrics=metrics)
 
-    return model
+    return model, get_prediction
