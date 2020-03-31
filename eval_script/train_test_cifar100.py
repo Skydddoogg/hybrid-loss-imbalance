@@ -95,9 +95,9 @@ if __name__ == '__main__':
         for loss in LOSS:
 
             args_list = [[str(reduction_ratio), dataset, 'dl-' + loss, loss, args.network] for reduction_ratio in REDUCTION_RATIO]
-            for args in args_list:
+            for arg_set in args_list:
                 print('.', end='')
-                train_test(args)
+                train_test(arg_set)
 
         print('')
         print("Completed evaluating on {0} ({1}/{2})".format(dataset, count, len(DATASETS)))
