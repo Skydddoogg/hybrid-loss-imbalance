@@ -30,7 +30,7 @@ def create_report(dataset_name, classification_algorithm, reduction_ratio):
 
 if __name__ == '__main__':
 
-    DATASETS = ['Tree1_cifar100', 'Tree2_cifar100']
+    DATASETS = ['Tree1_cifar100', 'Tree2_cifar100', 'Household_cifar100']
     REDUCTION_RATIO = [20, 10, 5]
 
     for dataset_name in DATASETS:
