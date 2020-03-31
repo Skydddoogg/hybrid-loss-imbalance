@@ -16,10 +16,10 @@ warnings.filterwarnings("ignore")
 from config_path import result_path, viz_path
 from config import LOSS
 
-def create_report(dataset_name, classification_algorithm, reduction_ratio):
+def create_report(dataset_name, classification_algorithm, reduction_ratio, network):
 
-    y_test = np.load(os.path.join(result_path, dataset_name, 'groundtruth', classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
-    y_pred = np.load(os.path.join(result_path, dataset_name, 'prediction', classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
+    y_test = np.load(os.path.join(result_path, dataset_name, 'groundtruth', network + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
+    y_pred = np.load(os.path.join(result_path, dataset_name, 'prediction', network + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
 
     cm = confusion_matrix(y_test, y_pred)
 
@@ -30,6 +30,11 @@ def create_report(dataset_name, classification_algorithm, reduction_ratio):
 
 if __name__ == '__main__':
 
+    # Argument management
+    parser = argparse.ArgumentParser()
+    parser.add_argument("network")
+    args = parser.parse_args()
+
     DATASETS = ['Tree1_cifar100', 'Tree2_cifar100', 'Household_cifar100']
     REDUCTION_RATIO = [20, 10, 5]
 
@@ -38,5 +43,5 @@ if __name__ == '__main__':
         for ratio in REDUCTION_RATIO:
             print("{0} at {1} reduction ratio".format(dataset_name, ratio))
             for loss in LOSS:
-                create_report(dataset_name, 'dl-' + loss, ratio)
+                create_report(dataset_name, 'dl-' + loss, ratio, args.network)
 
