@@ -49,11 +49,14 @@ def train_test(args_list):
         loss=LOSS[loss],
         metrics=METRICS)
 
-    initial_weight_path = os.path.join('model_initial_weights', network)
+    initial_weight_path = os.path.join('model_initial_weights')
 
     if not os.path.isdir(initial_weight_path):
         os.mkdir(initial_weight_path)
         os.mkdir(os.path.join(initial_weight_path, network))
+    else:
+        if not os.path.isdir(initial_weight_path, network):
+            os.mkdir(os.path.join(initial_weight_path, network))
 
         utils.make_initial_weights(model, os.path.join(initial_weight_path, network, 'initial_weights'))
 
