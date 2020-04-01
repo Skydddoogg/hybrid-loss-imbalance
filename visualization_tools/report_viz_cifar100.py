@@ -35,13 +35,30 @@ if __name__ == '__main__':
     parser.add_argument("network")
     args = parser.parse_args()
 
-    DATASETS = ['Tree1_cifar100', 'Tree2_cifar100', 'Household_cifar100']
+    DATASETS = {
+        'Household_cifar100': {
+            'network': 'MFE_image_net2'
+            }, 
+        'Tree1_cifar100': {
+            'network': 'MFE_image_net1'
+            }, 
+        'Tree2_cifar100': {
+            'network': 'MFE_image_net1'
+            }
+        }
+
     REDUCTION_RATIO = [20, 10, 5]
 
     for dataset_name in DATASETS:
+
+        if args.network == '-':
+            model_architecture = DATASETS[dataset_name]['network']
+        else:
+            model_architecture = args.network
+
         df_list = list()
         for ratio in REDUCTION_RATIO:
             print("{0} at {1} reduction ratio".format(dataset_name, ratio))
             for loss in LOSS:
-                create_report(dataset_name, 'dl-' + loss, ratio, args.network)
+                create_report(dataset_name, 'dl-' + loss, ratio, model_architecture)
 
