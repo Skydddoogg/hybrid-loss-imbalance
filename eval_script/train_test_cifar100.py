@@ -53,6 +53,7 @@ def train_test(args_list):
     if not os.path.isdir(initial_weight_path):
         os.mkdir(initial_weight_path)
         os.mkdir(os.path.join(initial_weight_path, network))
+        utils.make_initial_weights(model, os.path.join(initial_weight_path, network, 'initial_weights'))
     else:
         if not os.path.isdir(os.path.join(initial_weight_path, network)):
             os.mkdir(os.path.join(initial_weight_path, network))
