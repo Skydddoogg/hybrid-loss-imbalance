@@ -10,7 +10,7 @@ import warnings
 from config import BATCH_SIZE, EPOCHS, LOSS, EARLY_STOPPING, SEED, METRICS
 from config_path import result_path
 from eval_script.utils import save_results
-from external_models.DeepLearning import resnetV2, utils, image_network
+from external_models.DeepLearning import resnetV2, utils, MFE_image_net1, MFE_image_net2
 import tensorflow as tf
 from tensorflow.keras.callbacks import LearningRateScheduler
 from tensorflow.keras.callbacks import ReduceLROnPlateau
@@ -38,8 +38,10 @@ def train_test(args_list):
     # Model
     if network == 'resnetV2':
         model, get_prediction = resnetV2.make_model(input_shape = (X_train.shape[1], X_train.shape[2], X_train.shape[3]))
-    elif network == 'MFEnet':
-        model, get_prediction = image_network.make_model(input_shape = (X_train.shape[1], X_train.shape[2], X_train.shape[3])) 
+    elif network == 'MFE_image_net1':
+        model, get_prediction = MFE_image_net1.make_model(input_shape = (X_train.shape[1], X_train.shape[2], X_train.shape[3]))
+    elif network == 'MFE_image_net2':
+        model, get_prediction = MFE_image_net2.make_model(input_shape = (X_train.shape[1], X_train.shape[2], X_train.shape[3]))
 
     model.compile(
         optimizer=tf.keras.optimizers.Adam(lr=utils.lr_schedule(0)),
@@ -79,7 +81,17 @@ def train_test(args_list):
 
 if __name__ == '__main__':
 
-    DATASETS = ['Household_cifar100', 'Tree1_cifar100', 'Tree2_cifar100']
+    DATASETS = {
+        'Household_cifar100': {
+            'network': 'MFE_image_net2'
+            }, 
+        'Tree1_cifar100': {
+            'network': 'MFE_image_net1'
+            }, 
+        'Tree2_cifar100': {
+            'network': 'MFE_image_net1'
+            }
+        }
     REDUCTION_RATIO = [20, 10, 5]
 
     # Argument management
@@ -91,13 +103,16 @@ if __name__ == '__main__':
 
     for dataset in DATASETS:
 
+        if args.network == '-':
+            model_architecture = DATASETS[dataset]['network']
+        else:
+            model_architecture = args.network
+
         for loss in LOSS:
 
-            args_list = [[str(reduction_ratio), dataset, 'dl-' + loss, loss, args.network] for reduction_ratio in REDUCTION_RATIO]
+            args_list = [[str(reduction_ratio), dataset, 'dl-' + loss, loss, model_architecture] for reduction_ratio in REDUCTION_RATIO]
             for arg_set in args_list:
-                print('.', end='')
                 train_test(arg_set)
 
-        print('')
         print("Completed evaluating on {0} ({1}/{2})".format(dataset, count, len(DATASETS)))
         count += 1
