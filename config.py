@@ -3,7 +3,7 @@ from custom_functions import custom_loss
 from external_models.DeepLearning.utils import lr_schedule
 
 # Constant
-ITERATION = 1
+N_ROUND = 5
 BATCH_SIZE = 16
 EPOCHS = 200
 SEED = 10

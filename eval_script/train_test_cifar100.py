@@ -7,7 +7,7 @@ from sklearn import preprocessing
 import os
 import argparse
 import warnings
-from config import BATCH_SIZE, EPOCHS, LOSS, EARLY_STOPPING, SEED, METRICS
+from config import BATCH_SIZE, EPOCHS, LOSS, EARLY_STOPPING, SEED, METRICS, N_ROUND
 from config_path import result_path
 from eval_script.utils import save_results
 from external_models.DeepLearning import resnetV2, utils, MFE_image_net1, MFE_image_net2
@@ -102,15 +102,13 @@ if __name__ == '__main__':
 
     count = 1
 
-    n_round = 5
-
     for dataset in DATASETS:
 
         if args.network == '-':
             model_architecture = DATASETS[dataset]['network']
         else:
             model_architecture = args.network
-        for _round in range(1, n_round + 1):
+        for _round in range(1, N_ROUND + 1):
             for loss in LOSS:
 
                 args_list = [[str(reduction_ratio), dataset, 'dl-' + loss, loss, model_architecture, _round] for reduction_ratio in REDUCTION_RATIO]

@@ -14,18 +14,25 @@ import warnings
 warnings.filterwarnings("ignore")
 
 from config_path import result_path, viz_path
-from config import LOSS
+from config import LOSS, N_ROUND
 
 def create_report(dataset_name, classification_algorithm, reduction_ratio, network):
 
-    y_test = np.load(os.path.join(result_path, dataset_name, 'groundtruth', network + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
-    y_pred = np.load(os.path.join(result_path, dataset_name, 'prediction', network + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
+    f1_collector = []
 
-    cm = confusion_matrix(y_test, y_pred)
+    for _round in range(1, N_ROUND):
+        y_test = np.load(os.path.join(result_path, dataset_name, 'groundtruth', network + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
+        y_pred = np.load(os.path.join(result_path, dataset_name, 'prediction', network + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
 
-    f1 = f1_score(y_test, y_pred)
+        cm = confusion_matrix(y_test, y_pred)
 
-    print('%20s: %.2f' % (classification_algorithm, f1))
+        f1 = f1_score(y_test, y_pred)
+
+        f1_collector.append(f1)
+
+    f1_collector = np.array(f1_collector)
+
+    print('%20s: %.2f±%.2f' % (classification_algorithm, np.average(f1_collector), np.std(f1_collector)))
 
 
 if __name__ == '__main__':
