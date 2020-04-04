@@ -28,11 +28,11 @@ LOSS = {
       'Balanced-BCE': custom_loss.CrossEntropy().balanced_binary_crossentropy,
       # 'MSE': custom_loss.MeanSquareError().mean_square_error,
       'MFE': custom_loss.MeanFalseError().mean_false_error,
-      'Balanced-MFE': custom_loss.MeanFalseError().mean_squared_false_error,
+      'MSFE': custom_loss.MeanFalseError().mean_squared_false_error,
       'FL': custom_loss.Focal().focal,
       'Balanced-FL': custom_loss.Focal().balanced_focal,
-      'Hybrid-MFE-FL': custom_loss.Hybrid().hybrid_mfe_fl,
-      'Balanced-Hybrid-MFE-FL': custom_loss.Hybrid().balanced_hybrid_mfe_fl
+      'Hybrid': custom_loss.Hybrid().hybrid,
+      'Balanced-Hybrid': custom_loss.Hybrid().balanced_hybrid
 }
 OPTIMIZER = keras.optimizers.Adam(lr=lr_schedule(0))
 

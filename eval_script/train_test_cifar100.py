@@ -22,7 +22,7 @@ tf.random.set_seed(SEED)
 
 def train_test(args_list):
 
-    reduction_ratio, dataset_name, classification_algorithm, loss, network = args_list
+    reduction_ratio, dataset_name, classification_algorithm, loss, network, _round = args_list
 
     X_train, X_test, X_valid, y_train, y_test, y_valid = get_splitted_data(dataset_name, reduction_ratio, validation = True)
     # X_train, X_test, y_train, y_test = get_mocked_imbalanced_data(n_samples = 100, n_features = 5, neg_ratio = 0.9)
@@ -75,7 +75,7 @@ def train_test(args_list):
     print(y_pred, loss)
 
     # Save
-    save_results(y_test, y_pred, classification_algorithm, dataset_name, reduction_ratio, network)
+    save_results(y_test, y_pred, 'round_' + _round + '_' + classification_algorithm, dataset_name, reduction_ratio, network)
     # utils.save_model(model, classification_algorithm + '_' + dataset_name + '_' + reduction_ratio, dataset_name)
     # utils.save_history(history, classification_algorithm + '_' + dataset_name + '_' + reduction_ratio, dataset_name)
 
@@ -102,18 +102,20 @@ if __name__ == '__main__':
 
     count = 1
 
+    n_round = 5
+
     for dataset in DATASETS:
 
         if args.network == '-':
             model_architecture = DATASETS[dataset]['network']
         else:
             model_architecture = args.network
+        for _round in range(1, n_round + 1):
+            for loss in LOSS:
 
-        for loss in LOSS:
+                args_list = [[str(reduction_ratio), dataset, 'dl-' + loss, loss, model_architecture, _round] for reduction_ratio in REDUCTION_RATIO]
+                for arg_set in args_list:
+                    train_test(arg_set)
 
-            args_list = [[str(reduction_ratio), dataset, 'dl-' + loss, loss, model_architecture] for reduction_ratio in REDUCTION_RATIO]
-            for arg_set in args_list:
-                train_test(arg_set)
-
-        print("Completed evaluating on {0} ({1}/{2})".format(dataset, count, len(DATASETS)))
-        count += 1
+            print("(round {0}) Completed evaluating on {1} ({2}/{3})".format(_round, dataset, count, len(DATASETS) * n_round))
+            count += 1

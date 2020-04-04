@@ -213,7 +213,7 @@ class Hybrid(object):
         self.alpha = alpha
         self.label_smoothing = label_smoothing
 
-    def hybrid_mfe_fl(self, y_true, y_pred):
+    def hybrid(self, y_true, y_pred):
 
         y_pred = ops.convert_to_tensor(y_pred)
         y_true = math_ops.cast(y_true, y_pred.dtype)
@@ -255,11 +255,11 @@ class Hybrid(object):
         positive_loss = tf.where(tf.equal(n_positive, 0), 0.0, K.mean(positive_y_true * positive_pos_loss + (1 - positive_y_true) * positive_neg_loss))
         negative_loss = tf.where(tf.equal(n_negative, 0), 0.0, K.mean(negative_y_true * negative_pos_loss + (1 - negative_y_true) * negative_neg_loss))
 
-        loss = K.mean(positive_loss + negative_loss)
+        loss = positive_loss + negative_loss
 
         return loss
 
-    def balanced_hybrid_mfe_fl(self, y_true, y_pred):
+    def balanced_hybrid(self, y_true, y_pred):
 
         y_pred = ops.convert_to_tensor(y_pred)
         y_true = math_ops.cast(y_true, y_pred.dtype)
@@ -301,6 +301,6 @@ class Hybrid(object):
         positive_loss = tf.where(tf.equal(n_positive, 0), 0.0, K.mean(positive_y_true * positive_pos_loss + (1 - positive_y_true) * positive_neg_loss))
         negative_loss = tf.where(tf.equal(n_negative, 0), 0.0, K.mean(negative_y_true * negative_pos_loss + (1 - negative_y_true) * negative_neg_loss))
 
-        loss = K.mean(positive_loss + negative_loss)
+        loss = positive_loss + negative_loss
 
         return loss
