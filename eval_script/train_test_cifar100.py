@@ -115,5 +115,5 @@ if __name__ == '__main__':
                 for arg_set in args_list:
                     train_test(arg_set)
 
-            print("(round {0}) Completed evaluating on {1} ({2}/{3})".format(_round, dataset, count, len(DATASETS) * n_round))
+            print("(round {0}) Completed evaluating on {1} ({2}/{3})".format(_round, dataset, count, len(DATASETS) * N_ROUND))
             count += 1
