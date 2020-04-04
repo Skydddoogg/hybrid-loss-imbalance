@@ -83,12 +83,12 @@ def train_test(args_list):
 if __name__ == '__main__':
 
     DATASETS = {
-        # 'Household_cifar100': {
-        #     'network': 'MFE_image_net2'
-        #     }, 
-        # 'Tree1_cifar100': {
-        #     'network': 'MFE_image_net1'
-        #     }, 
+        'Household_cifar100': {
+            'network': 'MFE_image_net2'
+            }, 
+        'Tree1_cifar100': {
+            'network': 'MFE_image_net1'
+            }, 
         'Tree2_cifar100': {
             'network': 'MFE_image_net1'
             }
