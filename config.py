@@ -18,9 +18,9 @@ METRICS = [
 ]
 EARLY_STOPPING = keras.callbacks.EarlyStopping(
     monitor='val_loss', 
-#     min_delta=1e-6,
+    min_delta=1e-6,
     verbose=0,
-    patience=10,
+    patience=15,
     mode='min',
     restore_best_weights=True)
 LOSS = {
