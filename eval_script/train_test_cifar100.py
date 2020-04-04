@@ -17,8 +17,8 @@ from tensorflow.keras.callbacks import ReduceLROnPlateau
 
 warnings.filterwarnings('ignore')
 
-os.environ['TF_DETERMINISTIC_OPS'] = '1'
-tf.random.set_seed(SEED)
+# os.environ['TF_DETERMINISTIC_OPS'] = '1'
+# tf.random.set_seed(SEED)
 
 def train_test(args_list):
 
@@ -66,7 +66,7 @@ def train_test(args_list):
         epochs=EPOCHS,
         batch_size=BATCH_SIZE,
         validation_data=(X_valid, y_valid),
-        callbacks=[EARLY_STOPPING, lr_scheduler, lr_reducer],
+        callbacks=[lr_scheduler, lr_reducer],
         verbose=1)
     
     # Get predictions
@@ -83,12 +83,12 @@ def train_test(args_list):
 if __name__ == '__main__':
 
     DATASETS = {
-        'Household_cifar100': {
-            'network': 'MFE_image_net2'
-            }, 
-        'Tree1_cifar100': {
-            'network': 'MFE_image_net1'
-            }, 
+        # 'Household_cifar100': {
+        #     'network': 'MFE_image_net2'
+        #     }, 
+        # 'Tree1_cifar100': {
+        #     'network': 'MFE_image_net1'
+        #     }, 
         'Tree2_cifar100': {
             'network': 'MFE_image_net1'
             }

@@ -5,7 +5,7 @@ from external_models.DeepLearning.utils import lr_schedule
 # Constant
 ITERATION = 1
 BATCH_SIZE = 16
-EPOCHS = 500
+EPOCHS = 200
 SEED = 10
 METRICS = [
       keras.metrics.TruePositives(name='tp'),
@@ -20,7 +20,7 @@ EARLY_STOPPING = keras.callbacks.EarlyStopping(
     monitor='val_loss', 
     min_delta=1e-6,
     verbose=0,
-    patience=15,
+    patience=10,
     mode='min',
     restore_best_weights=True)
 LOSS = {
