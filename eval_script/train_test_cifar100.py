@@ -75,7 +75,7 @@ def train_test(args_list):
     print(y_pred, loss)
 
     # Save
-    save_results(y_test, y_pred, 'round_' + _round + '_' + classification_algorithm, dataset_name, reduction_ratio, network)
+    save_results(y_test, y_pred, 'round_' + str(_round) + '_' + classification_algorithm, dataset_name, reduction_ratio, network)
     # utils.save_model(model, classification_algorithm + '_' + dataset_name + '_' + reduction_ratio, dataset_name)
     # utils.save_history(history, classification_algorithm + '_' + dataset_name + '_' + reduction_ratio, dataset_name)
 
