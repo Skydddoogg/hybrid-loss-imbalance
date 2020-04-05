@@ -66,7 +66,7 @@ def train_test(args_list):
         epochs=EPOCHS,
         batch_size=BATCH_SIZE,
         validation_data=(X_valid, y_valid),
-        callbacks=[lr_scheduler, lr_reducer],
+        callbacks=[EARLY_STOPPING, lr_scheduler, lr_reducer],
         verbose=1)
     
     # Get predictions
