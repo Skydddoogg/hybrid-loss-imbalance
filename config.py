@@ -5,7 +5,7 @@ from external_models.DeepLearning.utils import lr_schedule
 # Constant
 N_ROUND = 5
 BATCH_SIZE = 16
-EPOCHS = 200
+EPOCHS = 500
 SEED = 10
 METRICS = [
       keras.metrics.TruePositives(name='tp'),
