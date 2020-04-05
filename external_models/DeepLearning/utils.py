@@ -21,7 +21,7 @@ def make_initial_weights(model, path):
 
 def lr_schedule(epoch):
 
-    initial_lrate = 0.1
+    initial_lrate = 1e-3
     drop = 0.5
     epochs_drop = 10.0
     lrate = initial_lrate * math.pow(drop, math.floor((1 + epoch) / epochs_drop))
