@@ -34,7 +34,8 @@ LOSS = {
       'Hybrid': custom_loss.Hybrid().hybrid,
       'Balanced-Hybrid': custom_loss.Hybrid().balanced_hybrid
 }
-OPTIMIZER = keras.optimizers.Adam(lr=lr_schedule(0))
+# OPTIMIZER = keras.optimizers.Adam(lr=lr_schedule(0))
+OPTIMIZER = keras.optimizers.Adam(lr=1e-6)
 
 # Source
 DATASETS = {
