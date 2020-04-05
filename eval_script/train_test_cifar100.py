@@ -32,8 +32,8 @@ def train_test(args_list):
     # log_dir = "cifar100_logs/fit/" + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
     # tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
-    lr_scheduler = LearningRateScheduler(utils.lr_schedule)
-    lr_reducer = ReduceLROnPlateau(monitor = 'val_loss', min_delta = 1e-6, patience=5, mode='min')
+    # lr_scheduler = LearningRateScheduler(utils.lr_schedule)
+    # lr_reducer = ReduceLROnPlateau(monitor = 'val_loss', min_delta = 1e-6, patience=5, mode='min')
 
     # Model
     if network == 'resnetV2':
@@ -66,9 +66,9 @@ def train_test(args_list):
         epochs=EPOCHS,
         batch_size=BATCH_SIZE,
         validation_data=(X_valid, y_valid),
-        callbacks=[EARLY_STOPPING, lr_scheduler, lr_reducer],
+        callbacks=[EARLY_STOPPING],
         verbose=1)
-    
+
     # Get predictions
     y_pred = get_prediction(model, X_test)
 
