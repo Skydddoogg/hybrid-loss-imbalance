@@ -14,7 +14,6 @@ import warnings
 warnings.filterwarnings("ignore")
 
 from config_path import result_path, viz_path
-from config import LOSS, N_ROUND
 
 def create_report(dataset_name, classification_algorithm, reduction_ratio, network):
 
@@ -54,6 +53,18 @@ if __name__ == '__main__':
             }
         }
 
+    LOSS_LIST = [
+        'Balanced-BCE',
+        'MFE',
+        'MSFE',
+        'FL',
+        'Balanced-FL',
+        'Hybrid',
+        'Balanced-Hybrid'
+    ]
+
+    N_ROUND = 5
+
     REDUCTION_RATIO = [20, 10, 5]
 
     for dataset_name in DATASETS:
@@ -66,6 +77,6 @@ if __name__ == '__main__':
         df_list = list()
         for ratio in REDUCTION_RATIO:
             print("{0} at {1} reduction ratio".format(dataset_name, ratio))
-            for loss in LOSS:
+            for loss in LOSS_LIST:
                 create_report(dataset_name, 'dl-' + loss, ratio, model_architecture)
 
