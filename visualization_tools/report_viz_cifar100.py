@@ -15,23 +15,50 @@ warnings.filterwarnings("ignore")
 
 from config_path import result_path, viz_path
 
-def create_report(dataset_name, classification_algorithm, reduction_ratio, network):
+def create_report(dataset_name, reduction_ratio, network, loss_list):
 
-    f1_collector = []
+    f1_loss = {}
+    best_loss = None
+    comparison_param = {
+        'f1': -np.Infinity,
+        'std': -np.Infinity
+    }
 
-    for _round in range(1, N_ROUND):
-        y_test = np.load(os.path.join(result_path, dataset_name, 'groundtruth', network + '_' + 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
-        y_pred = np.load(os.path.join(result_path, dataset_name, 'prediction', network + '_' + 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
+    for loss in loss_list:
 
-        cm = confusion_matrix(y_test, y_pred)
+        classification_algorithm = 'dl-' + loss
+        f1_collector = []
 
-        f1 = f1_score(y_test, y_pred)
+        for _round in range(1, N_ROUND):
+            y_test = np.load(os.path.join(result_path, dataset_name, 'groundtruth', network + '_' + 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
+            y_pred = np.load(os.path.join(result_path, dataset_name, 'prediction', network + '_' + 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
 
-        f1_collector.append(f1)
+            cm = confusion_matrix(y_test, y_pred)
 
-    f1_collector = np.array(f1_collector)
+            f1 = f1_score(y_test, y_pred)
 
-    print('%20s: %.2f±%.2f' % (classification_algorithm, np.average(f1_collector), np.std(f1_collector)))
+            f1_collector.append(f1)
+
+        f1_collector = np.array(f1_collector)
+        f1_loss[loss] = f1_collector
+
+        if np.average(f1_collector) > comparison_param['f1']:
+            comparison_param['f1'] = np.average(f1_collector)
+            comparison_param['std'] = np.std(f1_collector)
+            best_loss = loss
+        elif np.average(f1_collector) == comparison_param['f1']:
+            if comparison_param['std'] > np.std(f1_collector):
+                comparison_param['f1'] = np.average(f1_collector)
+                comparison_param['std'] = np.std(f1_collector)
+                best_loss = loss
+        else:
+            pass
+
+    for loss in LOSS_LIST:
+        if loss == best_loss:
+            print('%20s: %.2f±%.2f - Best' % (loss, np.average(f1_loss[loss]), np.std(f1_loss[loss])))
+        else:
+            print('%20s: %.2f±%.2f' % (loss, np.average(f1_loss[loss]), np.std(f1_loss[loss])))
 
 
 if __name__ == '__main__':
@@ -77,6 +104,5 @@ if __name__ == '__main__':
         df_list = list()
         for ratio in REDUCTION_RATIO:
             print("{0} at {1} reduction ratio".format(dataset_name, ratio))
-            for loss in LOSS_LIST:
-                create_report(dataset_name, 'dl-' + loss, ratio, model_architecture)
+            create_report(dataset_name, ratio, model_architecture, LOSS_LIST)
 
