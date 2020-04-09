@@ -34,6 +34,10 @@ LOSS = {
       'Hybrid': custom_loss.Hybrid().hybrid,
       'Balanced-Hybrid': custom_loss.Hybrid().balanced_hybrid
 }
+
+ALPHA_RANGE = [0.75, 0.50, 0.25]
+GAMMA_RANGE = [0.1, 0.2, 0.5, 1.0, 2.0, 5.0]
+
 # OPTIMIZER = keras.optimizers.Adam(lr=lr_schedule(0))
 OPTIMIZER = keras.optimizers.Adam(lr=1e-6)
 
