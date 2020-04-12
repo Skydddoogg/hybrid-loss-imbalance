@@ -17,8 +17,6 @@ from tensorflow.keras.callbacks import ReduceLROnPlateau
 from custom_functions import custom_loss
 from sklearn.metrics import f1_score
 
-tf.config.experimental_run_functions_eagerly(True)
-
 warnings.filterwarnings('ignore')
 
 # os.environ['TF_DETERMINISTIC_OPS'] = '1'

@@ -244,14 +244,14 @@ class Hybrid(object):
         positive_loss = tf.where(tf.equal(n_positive, 0), 0.0, K.mean(positive_y_true * positive_pos_loss + (1 - positive_y_true) * positive_neg_loss))
         negative_loss = tf.where(tf.equal(n_negative, 0), 0.0, K.mean(negative_y_true * negative_pos_loss + (1 - negative_y_true) * negative_neg_loss))
 
-        false_pos = tf.keras.metrics.FalsePositives()
-        false_pos.update_state(y_true, y_pred)
+        positive_y_pred = math_ops.cast(tf.where(tf.less_equal(positive_y_pred, 0.5), 0.0, 1.0), tf.float32)
+        negative_y_pred = math_ops.cast(tf.where(tf.less_equal(negative_y_pred, 0.5), 0.0, 1.0), tf.float32)
 
-        false_neg = tf.keras.metrics.FalseNegatives()
-        false_neg.update_state(y_true, y_pred)
+        false_neg = math_ops.cast(math_ops.reduce_sum(positive_y_true - positive_y_pred), tf.float32)
+        false_pos = math_ops.cast(math_ops.reduce_sum(negative_y_true - negative_y_pred), tf.float32)
 
-        positive_cost = math_ops.cast(false_neg.result() / n_positive, tf.float32)
-        negative_cost = math_ops.cast(false_pos.result() / n_negative, tf.float32)
+        positive_cost = math_ops.cast(false_neg / n_positive, tf.float32)
+        negative_cost = math_ops.cast(false_pos / n_negative, tf.float32)
 
         loss = positive_cost * positive_loss + negative_cost * negative_loss
 
@@ -299,14 +299,14 @@ class Hybrid(object):
         positive_loss = tf.where(tf.equal(n_positive, 0), 0.0, K.mean(positive_y_true * positive_pos_loss + (1 - positive_y_true) * positive_neg_loss))
         negative_loss = tf.where(tf.equal(n_negative, 0), 0.0, K.mean(negative_y_true * negative_pos_loss + (1 - negative_y_true) * negative_neg_loss))
 
-        false_pos = tf.keras.metrics.FalsePositives()
-        false_pos.update_state(y_true, y_pred)
+        positive_y_pred = math_ops.cast(tf.where(tf.less_equal(positive_y_pred, 0.5), 0.0, 1.0), tf.float32)
+        negative_y_pred = math_ops.cast(tf.where(tf.less_equal(negative_y_pred, 0.5), 0.0, 1.0), tf.float32)
 
-        false_neg = tf.keras.metrics.FalseNegatives()
-        false_neg.update_state(y_true, y_pred)
+        false_neg = math_ops.cast(math_ops.reduce_sum(positive_y_true - positive_y_pred), tf.float32)
+        false_pos = math_ops.cast(math_ops.reduce_sum(negative_y_true - negative_y_pred), tf.float32)
 
-        positive_cost = math_ops.cast(false_neg.result() / n_positive, tf.float32)
-        negative_cost = math_ops.cast(false_pos.result() / n_negative, tf.float32)
+        positive_cost = math_ops.cast(false_neg / n_positive, tf.float32)
+        negative_cost = math_ops.cast(false_pos / n_negative, tf.float32)
 
         loss = positive_cost * positive_loss + negative_cost * negative_loss
 
