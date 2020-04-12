@@ -18,9 +18,6 @@ class MeanFalseError(object):
         y_pred = ops.convert_to_tensor(y_pred)
         y_true = math_ops.cast(y_true, y_pred.dtype)
 
-        n_positive = tf_count(y_true, 1.0)
-        n_negative = tf_count(y_true, 0.0)
-
         positive_indices = tf.where(condition = tf.equal(y_true, 1.0))
         negative_indices = tf.where(condition = tf.equal(y_true, 0.0))
 
@@ -29,8 +26,8 @@ class MeanFalseError(object):
         positive_y_pred = tf.gather_nd(y_pred, positive_indices)
         negative_y_pred = tf.gather_nd(y_pred, negative_indices)
 
-        FNE = math_ops.multiply(math_ops.cast(tf.where(tf.equal(n_positive, 0), 0.0, math_ops.cast(1 / n_positive, tf.float32)), tf.float32), math_ops.reduce_sum(math_ops.multiply(1 / 2, math_ops.square(positive_y_pred - positive_y_true))))
-        FPE = math_ops.multiply(math_ops.cast(tf.where(tf.equal(n_negative, 0), 0.0, math_ops.cast(1 / n_negative, tf.float32)), tf.float32), math_ops.reduce_sum(math_ops.multiply(1 / 2, math_ops.square(negative_y_pred - negative_y_true))))
+        FNE = K.mean(math_ops.squared_difference(positive_y_pred, positive_y_true), axis=-1)
+        FPE = K.mean(math_ops.squared_difference(negative_y_pred, negative_y_true), axis=-1)
 
         loss = FNE + FPE
 
@@ -40,9 +37,6 @@ class MeanFalseError(object):
         y_pred = ops.convert_to_tensor(y_pred)
         y_true = math_ops.cast(y_true, y_pred.dtype)
 
-        n_positive = tf_count(y_true, 1.0)
-        n_negative = tf_count(y_true, 0.0)
-
         positive_indices = tf.where(condition = tf.equal(y_true, 1.0))
         negative_indices = tf.where(condition = tf.equal(y_true, 0.0))
 
@@ -51,8 +45,8 @@ class MeanFalseError(object):
         positive_y_pred = tf.gather_nd(y_pred, positive_indices)
         negative_y_pred = tf.gather_nd(y_pred, negative_indices)
 
-        FNE = math_ops.multiply(math_ops.cast(tf.where(tf.equal(n_positive, 0), 0.0, math_ops.cast(1 / n_positive, tf.float32)), tf.float32), math_ops.reduce_sum(math_ops.multiply(1 / 2, math_ops.square(positive_y_pred - positive_y_true))))
-        FPE = math_ops.multiply(math_ops.cast(tf.where(tf.equal(n_negative, 0), 0.0, math_ops.cast(1 / n_negative, tf.float32)), tf.float32), math_ops.reduce_sum(math_ops.multiply(1 / 2, math_ops.square(negative_y_pred - negative_y_true))))
+        FNE = K.mean(math_ops.squared_difference(positive_y_pred, positive_y_true), axis=-1)
+        FPE = K.mean(math_ops.squared_difference(negative_y_pred, negative_y_true), axis=-1)
 
         loss = (FNE ** 2) + (FPE ** 2)
 
@@ -67,12 +61,7 @@ class MeanSquareError(object):
         y_pred = ops.convert_to_tensor(y_pred)
         y_true = math_ops.cast(y_true, y_pred.dtype)
 
-        n_positive = tf_count(y_true, 1.0)
-        n_negative = tf_count(y_true, 0.0)
-
-        n_sample = n_negative + n_positive
-
-        loss = math_ops.multiply(math_ops.cast(1 / n_sample, tf.float32), math_ops.reduce_sum(math_ops.multiply(1 / 2, math_ops.square(y_pred - y_true))))
+        loss = K.mean(math_ops.squared_difference(y_pred, y_true), axis=-1)
 
         return loss
 
@@ -227,8 +216,8 @@ class Hybrid(object):
         epsilon_ = _constant_to_tensor(epsilon(), y_pred.dtype.base_dtype)
         y_pred = clip_ops.clip_by_value(y_pred, epsilon_, 1. - epsilon_)
 
-        n_positive = tf_count(y_true, 1.0)
-        n_negative = tf_count(y_true, 0.0)
+        n_positive = math_ops.cast(tf_count(y_true, 1.0), tf.float32)
+        n_negative = math_ops.cast(tf_count(y_true, 0.0), tf.float32)
 
         positive_indices = tf.where(condition = tf.equal(y_true, 1.0))
         negative_indices = tf.where(condition = tf.equal(y_true, 0.0))
@@ -255,7 +244,16 @@ class Hybrid(object):
         positive_loss = tf.where(tf.equal(n_positive, 0), 0.0, K.mean(positive_y_true * positive_pos_loss + (1 - positive_y_true) * positive_neg_loss))
         negative_loss = tf.where(tf.equal(n_negative, 0), 0.0, K.mean(negative_y_true * negative_pos_loss + (1 - negative_y_true) * negative_neg_loss))
 
-        loss = positive_loss + negative_loss
+        false_pos = tf.keras.metrics.FalsePositives()
+        false_pos.update_state(y_true, y_pred)
+
+        false_neg = tf.keras.metrics.FalseNegatives()
+        false_neg.update_state(y_true, y_pred)
+
+        positive_cost = math_ops.cast(false_neg.result() / n_positive, tf.float64)
+        negative_cost = math_ops.cast(false_pos.result() / n_negative, tf.float64)
+
+        loss = positive_cost * positive_loss + negative_cost * negative_loss
 
         return loss
 
@@ -273,8 +271,8 @@ class Hybrid(object):
         epsilon_ = _constant_to_tensor(epsilon(), y_pred.dtype.base_dtype)
         y_pred = clip_ops.clip_by_value(y_pred, epsilon_, 1. - epsilon_)
 
-        n_positive = tf_count(y_true, 1.0)
-        n_negative = tf_count(y_true, 0.0)
+        n_positive = math_ops.cast(tf_count(y_true, 1.0), tf.float32)
+        n_negative = math_ops.cast(tf_count(y_true, 0.0), tf.float32)
 
         positive_indices = tf.where(condition = tf.equal(y_true, 1.0))
         negative_indices = tf.where(condition = tf.equal(y_true, 0.0))
@@ -301,6 +299,15 @@ class Hybrid(object):
         positive_loss = tf.where(tf.equal(n_positive, 0), 0.0, K.mean(positive_y_true * positive_pos_loss + (1 - positive_y_true) * positive_neg_loss))
         negative_loss = tf.where(tf.equal(n_negative, 0), 0.0, K.mean(negative_y_true * negative_pos_loss + (1 - negative_y_true) * negative_neg_loss))
 
-        loss = positive_loss + negative_loss
+        false_pos = tf.keras.metrics.FalsePositives()
+        false_pos.update_state(y_true, y_pred)
+
+        false_neg = tf.keras.metrics.FalseNegatives()
+        false_neg.update_state(y_true, y_pred)
+
+        positive_cost = math_ops.cast(false_neg.result() / n_positive, tf.float64)
+        negative_cost = math_ops.cast(false_pos.result() / n_negative, tf.float64)
+
+        loss = positive_cost * positive_loss + negative_cost * negative_loss
 
         return loss
