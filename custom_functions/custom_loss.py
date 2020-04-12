@@ -250,8 +250,8 @@ class Hybrid(object):
         false_neg = math_ops.cast(math_ops.reduce_sum(positive_y_true - positive_y_pred), tf.float32)
         false_pos = math_ops.cast(math_ops.reduce_sum(negative_y_true - negative_y_pred), tf.float32)
 
-        positive_cost = math_ops.cast(false_neg / n_positive, tf.float32)
-        negative_cost = math_ops.cast(false_pos / n_negative, tf.float32)
+        positive_cost = tf.where(tf.equal(n_positive, 0), 0.0, math_ops.cast(false_neg / n_positive, tf.float32))
+        negative_cost = tf.where(tf.equal(n_negative, 0), 0.0, math_ops.cast(false_pos / n_negative, tf.float32))
 
         loss = positive_cost * positive_loss + negative_cost * negative_loss
 
@@ -305,8 +305,8 @@ class Hybrid(object):
         false_neg = math_ops.cast(math_ops.reduce_sum(positive_y_true - positive_y_pred), tf.float32)
         false_pos = math_ops.cast(math_ops.reduce_sum(negative_y_true - negative_y_pred), tf.float32)
 
-        positive_cost = math_ops.cast(false_neg / n_positive, tf.float32)
-        negative_cost = math_ops.cast(false_pos / n_negative, tf.float32)
+        positive_cost = tf.where(tf.equal(n_positive, 0), 0.0, math_ops.cast(false_neg / n_positive, tf.float32))
+        negative_cost = tf.where(tf.equal(n_negative, 0), 0.0, math_ops.cast(false_pos / n_negative, tf.float32))
 
         loss = positive_cost * positive_loss + negative_cost * negative_loss
 
