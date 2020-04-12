@@ -250,8 +250,8 @@ class Hybrid(object):
         false_neg = tf.keras.metrics.FalseNegatives()
         false_neg.update_state(y_true, y_pred)
 
-        positive_cost = math_ops.cast(false_neg.result() / n_positive, tf.float64)
-        negative_cost = math_ops.cast(false_pos.result() / n_negative, tf.float64)
+        positive_cost = math_ops.cast(false_neg.result() / n_positive, tf.float32)
+        negative_cost = math_ops.cast(false_pos.result() / n_negative, tf.float32)
 
         loss = positive_cost * positive_loss + negative_cost * negative_loss
 
@@ -305,8 +305,8 @@ class Hybrid(object):
         false_neg = tf.keras.metrics.FalseNegatives()
         false_neg.update_state(y_true, y_pred)
 
-        positive_cost = math_ops.cast(false_neg.result() / n_positive, tf.float64)
-        negative_cost = math_ops.cast(false_pos.result() / n_negative, tf.float64)
+        positive_cost = math_ops.cast(false_neg.result() / n_positive, tf.float32)
+        negative_cost = math_ops.cast(false_pos.result() / n_negative, tf.float32)
 
         loss = positive_cost * positive_loss + negative_cost * negative_loss
 
