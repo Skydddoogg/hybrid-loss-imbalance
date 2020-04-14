@@ -18,7 +18,7 @@ def make_model(input_shape, num_classes = 1):
 
     inputs = x.input
     flatten = Flatten()(x.output)
-    outputs = Dense(num_classes, activation='sigmoid')(flatten)
+    outputs = Dense(num_classes, activation='sigmoid', kernel_initializer='he_normal')(flatten)
     model = Model(inputs, outputs)
 
     return model, get_prediction
