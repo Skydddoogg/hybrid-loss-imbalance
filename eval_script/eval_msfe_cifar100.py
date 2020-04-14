@@ -9,7 +9,7 @@ import argparse
 import warnings
 from config import BATCH_SIZE, EPOCHS, LOSS, EARLY_STOPPING, SEED, METRICS, N_ROUND
 from config_path import result_path
-from eval_script.utils import save_results
+from eval_script.utils import save_results, choose_network
 from external_models.DeepLearning import resnetV2, utils, MFE_image_net1, MFE_image_net2
 import tensorflow as tf
 from tensorflow.keras.callbacks import LearningRateScheduler
@@ -37,12 +37,7 @@ def train_test(args_list):
     # lr_reducer = ReduceLROnPlateau(monitor = 'val_loss', min_delta = 1e-6, patience=5, mode='min')
 
     # Model
-    if network == 'resnetV2':
-        model, get_prediction = resnetV2.make_model(input_shape = (X_train.shape[1], X_train.shape[2], X_train.shape[3]))
-    elif network == 'MFE_image_net1':
-        model, get_prediction = MFE_image_net1.make_model(input_shape = (X_train.shape[1], X_train.shape[2], X_train.shape[3]))
-    elif network == 'MFE_image_net2':
-        model, get_prediction = MFE_image_net2.make_model(input_shape = (X_train.shape[1], X_train.shape[2], X_train.shape[3]))
+    model, get_prediction = choose_network(network).make_model(input_shape=(X_train.shape[1], X_train.shape[2], X_train.shape[3]))
 
     loss_function = custom_loss.MeanFalseError().mean_squared_false_error
 
