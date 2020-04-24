@@ -29,7 +29,7 @@ def create_report(dataset_name, reduction_ratio, network, loss_list):
         classification_algorithm = 'dl-' + loss
         f1_collector = []
 
-        for _round in range(1, N_ROUND):
+        for _round in range(1, N_ROUND + 1):
             y_test = np.load(os.path.join(result_path, dataset_name, 'groundtruth', network + '_' + 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
             y_pred = np.load(os.path.join(result_path, dataset_name, 'prediction', network + '_' + 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
 
