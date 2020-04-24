@@ -3,7 +3,7 @@ from custom_functions import custom_loss
 from external_models.DeepLearning.utils import lr_schedule
 
 # Constant
-N_ROUND = 5
+N_ROUND = 1
 BATCH_SIZE = 16
 EPOCHS = 500
 SEED = 10
@@ -18,7 +18,7 @@ METRICS = [
 ]
 EARLY_STOPPING = keras.callbacks.EarlyStopping(
     monitor='val_loss', 
-#     min_delta=1e-6,
+    min_delta=1e-6,
     verbose=0,
     patience=10,
     mode='min',
@@ -35,10 +35,10 @@ LOSS = {
       'Balanced-Hybrid': custom_loss.Hybrid().balanced_hybrid
 }
 
-# ALPHA_RANGE = [0.75, 0.50, 0.25]
-# GAMMA_RANGE = [0.1, 0.2, 0.5, 1.0, 2.0, 5.0]
-ALPHA_RANGE = [0.25]
-GAMMA_RANGE = [2.0]
+ALPHA_RANGE = [0.75, 0.70, 0.65, 0.60, 0.55, 0.50, 0.45, 0.40, 0.35, 0.30, 0.25, 0.20, 0.15, 0.10]
+GAMMA_RANGE = [0.1, 0.2, 0.5, 1.0, 2.0, 5.0]
+# ALPHA_RANGE = [0.25]
+# GAMMA_RANGE = [2.0]
 
 # OPTIMIZER = keras.optimizers.Adam(lr=lr_schedule(0))
 OPTIMIZER = keras.optimizers.Adam(lr=1e-6)

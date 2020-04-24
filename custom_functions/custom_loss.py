@@ -18,6 +18,9 @@ class MeanFalseError(object):
         y_pred = ops.convert_to_tensor(y_pred)
         y_true = math_ops.cast(y_true, y_pred.dtype)
 
+        n_positive = math_ops.cast(tf_count(y_true, 1.0), tf.float32)
+        n_negative = math_ops.cast(tf_count(y_true, 0.0), tf.float32)
+
         positive_indices = tf.where(condition = tf.equal(y_true, 1.0))
         negative_indices = tf.where(condition = tf.equal(y_true, 0.0))
 
@@ -26,8 +29,8 @@ class MeanFalseError(object):
         positive_y_pred = tf.gather_nd(y_pred, positive_indices)
         negative_y_pred = tf.gather_nd(y_pred, negative_indices)
 
-        FNE = K.mean(math_ops.squared_difference(positive_y_pred, positive_y_true), axis=-1)
-        FPE = K.mean(math_ops.squared_difference(negative_y_pred, negative_y_true), axis=-1)
+        FNE = tf.where(tf.equal(n_positive, 0), 0.0, K.mean(math_ops.squared_difference(positive_y_pred, positive_y_true), axis=-1))
+        FPE = tf.where(tf.equal(n_negative, 0), 0.0, K.mean(math_ops.squared_difference(negative_y_pred, negative_y_true), axis=-1))
 
         loss = FNE + FPE
 
@@ -37,6 +40,9 @@ class MeanFalseError(object):
         y_pred = ops.convert_to_tensor(y_pred)
         y_true = math_ops.cast(y_true, y_pred.dtype)
 
+        n_positive = math_ops.cast(tf_count(y_true, 1.0), tf.float32)
+        n_negative = math_ops.cast(tf_count(y_true, 0.0), tf.float32)
+
         positive_indices = tf.where(condition = tf.equal(y_true, 1.0))
         negative_indices = tf.where(condition = tf.equal(y_true, 0.0))
 
@@ -45,8 +51,8 @@ class MeanFalseError(object):
         positive_y_pred = tf.gather_nd(y_pred, positive_indices)
         negative_y_pred = tf.gather_nd(y_pred, negative_indices)
 
-        FNE = K.mean(math_ops.squared_difference(positive_y_pred, positive_y_true), axis=-1)
-        FPE = K.mean(math_ops.squared_difference(negative_y_pred, negative_y_true), axis=-1)
+        FNE = tf.where(tf.equal(n_positive, 0), 0.0, K.mean(math_ops.squared_difference(positive_y_pred, positive_y_true), axis=-1))
+        FPE = tf.where(tf.equal(n_negative, 0), 0.0, K.mean(math_ops.squared_difference(negative_y_pred, negative_y_true), axis=-1))
 
         loss = (FNE ** 2) + (FPE ** 2)
 

@@ -30,9 +30,9 @@ def train_test(args_list):
     # X_train, X_test, y_train, y_test = get_mocked_imbalanced_data(n_samples = 100, n_features = 5, neg_ratio = 0.9)
 
     # Prepare callbacks
-    log_dir = "gs://sky-movo/class_imbalance/cifar100_logs/fit/" + network + '/' + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
+    # log_dir = "gs://sky-movo/class_imbalance/cifar100_logs/fit/" + network + '/' + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
     # log_dir = "cifar100_logs/fit/" + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
-    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    # tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
     # lr_scheduler = LearningRateScheduler(utils.lr_schedule)
     # lr_reducer = ReduceLROnPlateau(monitor = 'val_loss', min_delta = 1e-6, patience=5, mode='min')
@@ -70,7 +70,7 @@ def train_test(args_list):
                 epochs=EPOCHS,
                 batch_size=BATCH_SIZE,
                 validation_data=(X_valid, y_valid),
-                callbacks=[EARLY_STOPPING, tensorboard_callback],
+                callbacks=[EARLY_STOPPING],
                 verbose=1)
 
             # Get predictions
