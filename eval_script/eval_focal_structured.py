@@ -38,7 +38,7 @@ def train_test(args_list):
     for alpha in ALPHA_RANGE:
         for gamma in GAMMA_RANGE:
 
-            loss_function = custom_loss.Hybrid(gamma=gamma, alpha=alpha).balanced_hybrid
+            loss_function = custom_loss.Focal(gamma=gamma, alpha=alpha).balanced_focal
 
             model = structured_net.make_model(input_shape = (X_train_scaled.shape[1],), loss = loss_function)
             history = model.fit(
@@ -78,7 +78,7 @@ if __name__ == '__main__':
         mode='min',
         restore_best_weights=True)
 
-    loss = 'Balanced-Hybrid'
+    loss = 'Balanced-FL'
     network = "structured"
 
     count = 1

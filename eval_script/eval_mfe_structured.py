@@ -33,34 +33,27 @@ def train_test(args_list):
     # log_dir = "gs://sky-movo/class_imbalance/logs/fit/" + dataset_name + '/' + classification_algorithm
     # tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
-    best_f1 = -np.Infinity
+    loss_function = custom_loss.MeanFalseError().mean_false_error
 
-    for alpha in ALPHA_RANGE:
-        for gamma in GAMMA_RANGE:
+    model = structured_net.make_model(input_shape = (X_train_scaled.shape[1],), loss = loss_function)
+    history = model.fit(
+        X_train_scaled,
+        y_train,
+        epochs=EPOCHS,
+        batch_size=BATCH_SIZE,
+        validation_split=0.2,
+        callbacks=[EARLY_STOPPING],
+        verbose=0)
 
-            loss_function = custom_loss.Hybrid(gamma=gamma, alpha=alpha).balanced_hybrid
+    # Get predictions
+    y_pred = model.predict_classes(X_test_scaled).T[0]
 
-            model = structured_net.make_model(input_shape = (X_train_scaled.shape[1],), loss = loss_function)
-            history = model.fit(
-                X_train_scaled,
-                y_train,
-                epochs=EPOCHS,
-                batch_size=BATCH_SIZE,
-                validation_split=0.2,
-                callbacks=[EARLY_STOPPING],
-                verbose=0)
+    f1 = f1_score(y_test, y_pred)
 
-            # Get predictions
-            y_pred = model.predict_classes(X_test_scaled).T[0]
+    # Save
+    save_results(y_test, y_pred, classification_algorithm, dataset_name, iteration, network)
 
-            f1 = f1_score(y_test, y_pred)
-
-            if f1 >= best_f1:
-
-                # Save
-                save_results(y_test, y_pred, classification_algorithm, dataset_name, iteration, network)
-
-                best_f1 = f1
+    best_f1 = f1
 
     return best_f1
 
@@ -78,7 +71,7 @@ if __name__ == '__main__':
         mode='min',
         restore_best_weights=True)
 
-    loss = 'Balanced-Hybrid'
+    loss = 'MFE'
     network = "structured"
 
     count = 1
