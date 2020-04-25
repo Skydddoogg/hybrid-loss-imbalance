@@ -35,10 +35,10 @@ LOSS = {
       'Balanced-Hybrid': custom_loss.Hybrid().balanced_hybrid
 }
 
-# ALPHA_RANGE = [0.75, 0.70, 0.65, 0.60, 0.55, 0.50, 0.45, 0.40, 0.35, 0.30, 0.25, 0.20, 0.15, 0.10]
-# GAMMA_RANGE = [0.1, 0.2, 0.5, 1.0, 2.0, 5.0]
-ALPHA_RANGE = [0.25]
-GAMMA_RANGE = [2.0]
+ALPHA_RANGE = [0.75, 0.70, 0.65, 0.60, 0.55, 0.50, 0.45, 0.40, 0.35, 0.30, 0.25, 0.20, 0.15, 0.10]
+GAMMA_RANGE = [0.1, 0.2, 0.5, 1.0, 2.0, 5.0]
+# ALPHA_RANGE = [0.25]
+# GAMMA_RANGE = [2.0]
 
 # OPTIMIZER = keras.optimizers.Adam(lr=lr_schedule(0))
 OPTIMIZER = keras.optimizers.Adam(lr=1e-6)
@@ -69,88 +69,88 @@ DATASETS = {
             'n_features': 42,
             'n_samples': 3163
       },
-      'spectrometer': {
-            'n_features': 93,
-            'n_samples': 531
-      },
-      'car_eval_34': {
-            'n_features': 21,
-            'n_samples': 1728
-      },
-      'isolet': {
-            'n_features': 617,
-            'n_samples': 7797
-      },
-      'us_crime': {
-            'n_features': 100,
-            'n_samples': 1994
-      },
-      'yeast_ml8': {
-            'n_features': 103,
-            'n_samples': 2417
-      },
-      'scene': {
-            'n_features': 294,
-            'n_samples': 2407
-      },
-      'libras_move': {
-            'n_features': 90,
-            'n_samples': 360
-      },
-      'thyroid_sick': {
-            'n_features': 52,
-            'n_samples': 3772
-      },
-      'coil_2000': {
-            'n_features': 85,
-            'n_samples': 9822
-      },
-      'arrhythmia': {
-            'n_features': 278,
-            'n_samples': 452
-      },
-      'solar_flare_m0': {
-            'n_features': 32,
-            'n_samples': 1389
-      },
-      'oil': {
-            'n_features': 49,
-            'n_samples': 937
-      },
-      'car_eval_4': {
-            'n_features': 21,
-            'n_samples': 1728
-      },
-      'wine_quality': {
-            'n_features': 11,
-            'n_samples': 4898
-      },
-      # 'letter_img': {
-      #       'n_features': 16,
-      #       'n_samples': 20000
+      # 'spectrometer': {
+      #       'n_features': 93,
+      #       'n_samples': 531
       # },
-      'yeast_me2': {
-            'n_features': 8,
-            'n_samples': 1484
-      },
-      # 'webpage': {
-      #       'n_features': 300,
-      #       'n_samples': 34780
+      # 'car_eval_34': {
+      #       'n_features': 21,
+      #       'n_samples': 1728
       # },
-      'ozone_level': {
-            'n_features': 72,
-            'n_samples': 2536
-      },
-      # 'mammography': {
-      #       'n_features': 6,
-      #       'n_samples': 11183
+      # 'isolet': {
+      #       'n_features': 617,
+      #       'n_samples': 7797
       # },
-      # 'protein_homo': {
-      #       'n_features': 74,
-      #       'n_samples': 145751
+      # 'us_crime': {
+      #       'n_features': 100,
+      #       'n_samples': 1994
       # },
-      'abalone_19': {
-            'n_features': 10,
-            'n_samples': 4177
-      },
+      # 'yeast_ml8': {
+      #       'n_features': 103,
+      #       'n_samples': 2417
+      # },
+      # 'scene': {
+      #       'n_features': 294,
+      #       'n_samples': 2407
+      # },
+      # 'libras_move': {
+      #       'n_features': 90,
+      #       'n_samples': 360
+      # },
+      # 'thyroid_sick': {
+      #       'n_features': 52,
+      #       'n_samples': 3772
+      # },
+      # 'coil_2000': {
+      #       'n_features': 85,
+      #       'n_samples': 9822
+      # },
+      # 'arrhythmia': {
+      #       'n_features': 278,
+      #       'n_samples': 452
+      # },
+      # 'solar_flare_m0': {
+      #       'n_features': 32,
+      #       'n_samples': 1389
+      # },
+      # 'oil': {
+      #       'n_features': 49,
+      #       'n_samples': 937
+      # },
+      # 'car_eval_4': {
+      #       'n_features': 21,
+      #       'n_samples': 1728
+      # },
+      # 'wine_quality': {
+      #       'n_features': 11,
+      #       'n_samples': 4898
+      # },
+      # # 'letter_img': {
+      # #       'n_features': 16,
+      # #       'n_samples': 20000
+      # # },
+      # 'yeast_me2': {
+      #       'n_features': 8,
+      #       'n_samples': 1484
+      # },
+      # # 'webpage': {
+      # #       'n_features': 300,
+      # #       'n_samples': 34780
+      # # },
+      # 'ozone_level': {
+      #       'n_features': 72,
+      #       'n_samples': 2536
+      # },
+      # # 'mammography': {
+      # #       'n_features': 6,
+      # #       'n_samples': 11183
+      # # },
+      # # 'protein_homo': {
+      # #       'n_features': 74,
+      # #       'n_samples': 145751
+      # # },
+      # 'abalone_19': {
+      #       'n_features': 10,
+      #       'n_samples': 4177
+      # },
 }
