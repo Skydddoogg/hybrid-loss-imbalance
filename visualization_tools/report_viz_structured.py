@@ -25,14 +25,16 @@ def create_report(dataset_name, network, loss_list):
         'std': -np.Infinity
     }
 
+    result_path_dataset = os.path.join(result_path, dataset_name)
+
     for loss in loss_list:
 
         classification_algorithm = 'dl-' + loss
         f1_collector = []
 
         for _round in range(1, N_ROUND + 1):
-            y_test = np.load(os.path.join(result_path, dataset_name, 'groundtruth', network + '_' + 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
-            y_pred = np.load(os.path.join(result_path, dataset_name, 'prediction', network + '_' + 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
+            y_test = np.load(os.path.join(result_path_dataset, 'groundtruth', network + '_' + classification_algorithm + '_' + dataset_name + '_' + str(_round) + ".npy"))
+            y_pred = np.load(os.path.join(result_path_dataset, 'prediction', network + '_' + classification_algorithm + '_' + dataset_name + '_' + str(_round) + ".npy"))
 
             cm = confusion_matrix(y_test, y_pred)
 
@@ -77,5 +79,8 @@ if __name__ == '__main__':
 
     for dataset_name in DATASETS:
 
+        print(dataset_name)
+
         create_report(dataset_name, model_architecture, LOSS_LIST)
+        print(" ")
 
