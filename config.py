@@ -45,30 +45,30 @@ OPTIMIZER = keras.optimizers.Adam(lr=1e-6)
 
 # Source
 DATASETS = {
-      'ecoli': {
-            'n_features': 7,
-            'n_samples': 336
-      },
-      'optical_digits': {
-            'n_features': 64,
-            'n_samples': 5620
-      },
-      'satimage': {
-            'n_features': 36,
-            'n_samples': 6435
-      },
+      # 'ecoli': {
+      #       'n_features': 7,
+      #       'n_samples': 336
+      # },
+      # 'optical_digits': {
+      #       'n_features': 64,
+      #       'n_samples': 5620
+      # },
+      # 'satimage': {
+      #       'n_features': 36,
+      #       'n_samples': 6435
+      # },
       # 'pen_digits': {
       #       'n_features': 16,
       #       'n_samples': 10992
       # },
-      'abalone': {
-            'n_features': 10,
-            'n_samples': 4177
-      },
-      'sick_euthyroid': {
-            'n_features': 42,
-            'n_samples': 3163
-      },
+      # 'abalone': {
+      #       'n_features': 10,
+      #       'n_samples': 4177
+      # },
+      # 'sick_euthyroid': {
+      #       'n_features': 42,
+      #       'n_samples': 3163
+      # },
       'spectrometer': {
             'n_features': 93,
             'n_samples': 531
