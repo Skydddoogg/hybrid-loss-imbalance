@@ -7,11 +7,12 @@ from sklearn import preprocessing
 import os
 import argparse
 import warnings
-from config import BATCH_SIZE, EPOCHS, LOSS, EARLY_STOPPING, SEED, METRICS, N_ROUND, ALPHA_RANGE, GAMMA_RANGE
+from eval_script.config_cifar100 import BATCH_SIZE, EPOCHS, EARLY_STOPPING, SEED, METRICS, N_ROUND, ALPHA_RANGE, GAMMA_RANGE
 from config_path import result_path
 from eval_script.utils import save_results, choose_network
 from external_models.DeepLearning import resnetV2, utils, MFE_image_net1, MFE_image_net2
 import tensorflow as tf
+from tensorflow import keras
 from tensorflow.keras.callbacks import LearningRateScheduler
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 from custom_functions import custom_loss
@@ -34,8 +35,12 @@ def train_test(args_list):
     # log_dir = "cifar100_logs/fit/" + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
     # tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
-    # lr_scheduler = LearningRateScheduler(utils.lr_schedule)
-    # lr_reducer = ReduceLROnPlateau(monitor = 'val_loss', min_delta = 1e-6, patience=5, mode='min')
+    initial_learning_rate = 0.1
+    lr_schedule = keras.optimizers.schedules.ExponentialDecay(
+        initial_learning_rate,
+        decay_steps=100000,
+        decay_rate=0.96,
+        staircase=True)
 
     # Model
     model, get_prediction = choose_network(network).make_model(input_shape=(X_train.shape[1], X_train.shape[2], X_train.shape[3]))
@@ -48,7 +53,7 @@ def train_test(args_list):
             loss_function = custom_loss.Focal(gamma = gamma, alpha = alpha).balanced_focal
 
             model.compile(
-                optimizer=tf.keras.optimizers.Adam(lr=utils.lr_schedule(0)),
+                optimizer=tf.keras.optimizers.Adam(learning_rate=lr_schedule),
                 loss=loss_function,
                 metrics=METRICS)
 
