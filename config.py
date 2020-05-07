@@ -69,34 +69,34 @@ DATASETS = {
       #       'n_features': 42,
       #       'n_samples': 3163
       # },
-      'spectrometer': {
-            'n_features': 93,
-            'n_samples': 531
-      },
-      'car_eval_34': {
-            'n_features': 21,
-            'n_samples': 1728
-      },
-      'isolet': {
-            'n_features': 617,
-            'n_samples': 7797
-      },
-      'us_crime': {
-            'n_features': 100,
-            'n_samples': 1994
-      },
-      'yeast_ml8': {
-            'n_features': 103,
-            'n_samples': 2417
-      },
-      'scene': {
-            'n_features': 294,
-            'n_samples': 2407
-      },
-      'libras_move': {
-            'n_features': 90,
-            'n_samples': 360
-      },
+      # 'spectrometer': {
+      #       'n_features': 93,
+      #       'n_samples': 531
+      # },
+      # 'car_eval_34': {
+      #       'n_features': 21,
+      #       'n_samples': 1728
+      # },
+      # 'isolet': {
+      #       'n_features': 617,
+      #       'n_samples': 7797
+      # },
+      # 'us_crime': {
+      #       'n_features': 100,
+      #       'n_samples': 1994
+      # },
+      # 'yeast_ml8': {
+      #       'n_features': 103,
+      #       'n_samples': 2417
+      # },
+      # 'scene': {
+      #       'n_features': 294,
+      #       'n_samples': 2407
+      # },
+      # 'libras_move': {
+      #       'n_features': 90,
+      #       'n_samples': 360
+      # },
       'thyroid_sick': {
             'n_features': 52,
             'n_samples': 3772
