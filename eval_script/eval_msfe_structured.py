@@ -72,7 +72,7 @@ if __name__ == '__main__':
         restore_best_weights=True)
 
     loss = 'MSFE'
-    network = "structured"
+    network = "benchmark"
 
     count = 1
     for dataset in DATASETS:

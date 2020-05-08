@@ -82,7 +82,7 @@ def train_test(args_list):
 if __name__ == '__main__':
 
     loss = 'Balanced-Hybrid'
-    network = "structured"
+    network = "benchmark"
 
     count = 1
     for dataset in DATASETS:
