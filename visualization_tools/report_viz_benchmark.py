@@ -14,7 +14,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 from config_path import result_path, viz_path
-from config import DATASETS
+from eval_script.config_benchmark import DATASETS
 
 def create_report(dataset_name, network, loss_list):
 
@@ -75,7 +75,7 @@ if __name__ == '__main__':
 
     N_ROUND = 5
 
-    model_architecture = 'structured'
+    model_architecture = 'benchmark'
 
     for dataset_name in DATASETS:
 
