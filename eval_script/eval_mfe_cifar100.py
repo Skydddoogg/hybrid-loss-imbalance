@@ -74,11 +74,15 @@ def train_test(args_list):
 
     # Get predictions
     y_pred = get_prediction(model, X_test)
+    y_pred_prob = model.predict(X_test)
+    y_pred_prob = np.reshape(y_pred_prob, (y_pred_prob.shape[0],))
 
     print(y_pred, loss)
 
     # Save
-    save_results(y_test, y_pred, 'round_' + str(_round) + '_' + classification_algorithm, dataset_name, reduction_ratio, network)
+    save_results(y_test, y_pred, y_pred_prob, 'round_' + str(_round) + '_' + classification_algorithm, dataset_name, reduction_ratio, network)
+    # utils.save_model(model, classification_algorithm + '_' + dataset_name + '_' + reduction_ratio, dataset_name)
+    utils.save_history(history, classification_algorithm + '_' + dataset_name + '_' + reduction_ratio, dataset_name)
 
 
 if __name__ == '__main__':
