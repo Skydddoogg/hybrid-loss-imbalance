@@ -6,7 +6,9 @@ def make_model(input_shape, output_bias=None):
         output_bias = tf.keras.initializers.Constant(output_bias)
 
     model = keras.Sequential([
-        keras.layers.Dense((input_shape[0] + 2) // 2, activation='relu', input_shape=input_shape),
+        keras.layers.Dense(input_shape[0] * 2, activation='relu', input_shape=input_shape),
+        keras.layers.Dense(input_shape[0], activation='relu'),
+        keras.layers.Dense(input_shape[0] // 2, activation='relu'),
         keras.layers.Dense(1, activation='sigmoid', bias_initializer=output_bias),
     ])
 

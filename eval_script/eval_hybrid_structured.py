@@ -66,13 +66,15 @@ def train_test(args_list):
 
             # Get predictions
             y_pred = model.predict_classes(X_test_scaled).T[0]
+            y_pred_prob = model.predict(X_test_scaled).T[0]
 
             f1 = f1_score(y_test, y_pred)
 
             if f1 >= best_f1:
 
                 # Save
-                save_results(y_test, y_pred, classification_algorithm, dataset_name, iteration, network)
+                save_results(y_test, y_pred, y_pred_prob, classification_algorithm, dataset_name, iteration, network)
+                utils.save_history(history, classification_algorithm + '_' + dataset_name + '_' + iteration, dataset_name)
 
                 best_f1 = f1
 
