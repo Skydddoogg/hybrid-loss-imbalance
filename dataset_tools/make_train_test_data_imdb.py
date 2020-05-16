@@ -85,9 +85,7 @@ if __name__ == "__main__":
         combined_X_train, combined_y_train = shuffle_Xy(combined_X_train, combined_y_train)
         combined_X_test, combined_y_test = shuffle_Xy(combined_X_test, combined_y_test)
 
-        print(combined_X_test.shape)
-
-        # np.save(train_folder_path + '/X/' + str(ratio) + '.npy', combined_X_train)
-        # np.save(test_folder_path + '/X/' + str(ratio) + '.npy', combined_X_test)
-        # np.save(train_folder_path + '/y/' + str(ratio) + '.npy', combined_y_train)
-        # np.save(test_folder_path + '/y/' + str(ratio) + '.npy', combined_y_test)
+        np.save(train_folder_path + '/X/' + str(ratio) + '.npy', combined_X_train)
+        np.save(test_folder_path + '/X/' + str(ratio) + '.npy', combined_X_test)
+        np.save(train_folder_path + '/y/' + str(ratio) + '.npy', combined_y_train)
+        np.save(test_folder_path + '/y/' + str(ratio) + '.npy', combined_y_test)
