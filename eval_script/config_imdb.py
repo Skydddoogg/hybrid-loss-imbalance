@@ -1,6 +1,6 @@
 from tensorflow import keras
 
-BATCH_SIZE = 128
+BATCH_SIZE = 512
 EPOCHS = 500
 BUFFER_SIZE = 10000
 EARLY_STOPPING = keras.callbacks.EarlyStopping(
