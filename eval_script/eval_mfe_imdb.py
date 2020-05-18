@@ -71,7 +71,12 @@ def train_test(args_list):
         verbose=1)
 
     # Get predictions
-    y_pred = model.predict_classes(X_test).T[0]
+    y_pred = model.predict(X_test)
+    y_pred = np.reshape(y_pred, (y_pred.shape[0],))
+
+    y_pred[y_pred >= 0.5] = 1
+    y_pred[y_pred < 0.5] = 0
+
     y_pred_prob = model.predict(X_test)
     y_pred_prob = np.reshape(y_pred_prob, (y_pred_prob.shape[0],))
 
