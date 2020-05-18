@@ -8,8 +8,10 @@ def make_model(max_features):
     # Embed each integer in a 128-dimensional vector
     x = layers.Embedding(max_features, 128)(inputs)
     # Add 2 bidirectional LSTMs
+    x = layers.Bidirectional(layers.LSTM(128, return_sequences=True))(x)
     x = layers.Bidirectional(layers.LSTM(64, return_sequences=True))(x)
-    x = layers.Bidirectional(layers.LSTM(64))(x)
+    x = layers.Bidirectional(layers.LSTM(32, return_sequences=True))(x)
+    x = layers.Bidirectional(layers.LSTM(16))(x)
     # Add a classifier
     outputs = layers.Dense(1, activation="sigmoid")(x)
     model = keras.Model(inputs, outputs)
