@@ -44,6 +44,8 @@ def train_test(args_list):
 
     comparable_f1 = -np.Infinity
 
+    count = 1
+
     for alpha in ALPHA_RANGE:
         for gamma in GAMMA_RANGE:
 
@@ -87,7 +89,6 @@ def train_test(args_list):
 
             f1 = f1_score(y_test, y_pred)
             if f1 >= comparable_f1:
-                print(y_pred, loss)
 
                 # Save
                 save_results(y_test, y_pred, y_pred_prob, classification_algorithm, dataset_name, imb_ratio, network)
@@ -95,6 +96,8 @@ def train_test(args_list):
                 utils.save_history(history, classification_algorithm + '_' + dataset_name + '_' + imb_ratio, dataset_name)
 
                 comparable_f1 = f1
+            print("{0}/{1}".format(count, len(ALPHA_RANGE)*len(GAMMA_RANGE)))
+            count += 1
 
 
 if __name__ == '__main__':
