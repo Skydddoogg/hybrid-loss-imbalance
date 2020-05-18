@@ -1,14 +1,17 @@
+from tensorflow import keras
+from tensorflow.keras import layers
 
-import tensorflow as tf
+def make_model(max_features):
 
-def make_model(encoder):
-
-    model = tf.keras.Sequential([
-        tf.keras.layers.Embedding(encoder.vocab_size, 64),
-        tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64,  return_sequences=True)),
-        tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
-        tf.keras.layers.Dense(64, activation='relu'),
-        tf.keras.layers.Dense(1, activation='sigmoid')
-    ])
+    # Input for variable-length sequences of integers
+    inputs = keras.Input(shape=(None,), dtype="int32")
+    # Embed each integer in a 128-dimensional vector
+    x = layers.Embedding(max_features, 128)(inputs)
+    # Add 2 bidirectional LSTMs
+    x = layers.Bidirectional(layers.LSTM(64, return_sequences=True))(x)
+    x = layers.Bidirectional(layers.LSTM(64))(x)
+    # Add a classifier
+    outputs = layers.Dense(1, activation="sigmoid")(x)
+    model = keras.Model(inputs, outputs)
 
     return model

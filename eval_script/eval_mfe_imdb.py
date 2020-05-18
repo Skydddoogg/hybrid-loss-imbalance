@@ -7,7 +7,7 @@ from sklearn import preprocessing
 import os
 import argparse
 import warnings
-from eval_script.config_imdb import BATCH_SIZE, EPOCHS, EARLY_STOPPING, METRICS, ALPHA_RANGE, GAMMA_RANGE, BUFFER_SIZE
+from eval_script.config_imdb import BATCH_SIZE, EPOCHS, EARLY_STOPPING, METRICS, ALPHA_RANGE, GAMMA_RANGE, BUFFER_SIZE, max_features
 from config_path import result_path
 from eval_script.utils import save_results, choose_network
 from external_models.DeepLearning import lstm, utils
@@ -40,7 +40,7 @@ def train_test(args_list):
         staircase=True)
 
     # Model
-    model = lstm.make_model(encoder=encoder)
+    model = lstm.make_model(max_features)
 
     loss_function = custom_loss.MeanFalseError().mean_false_error
 

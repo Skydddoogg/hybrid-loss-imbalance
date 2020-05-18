@@ -5,6 +5,7 @@ import tensorflow_datasets as tfds
 import numpy as np
 from config_path import train_set_path, test_set_path
 import os
+from tensorflow import keras
 
 def get_data_for_one_class(X, y, _classes):
 
@@ -45,11 +46,11 @@ if __name__ == "__main__":
 
     dataset_name = 'imdb_reviews'
 
-    train_ds = tfds.load(dataset_name + '/subwords8k', split=tfds.Split.TRAIN, batch_size=-1)
-    test_ds = tfds.load(dataset_name + '/subwords8k', split=tfds.Split.TEST, batch_size=-1)
-    numpy_train_ds = tfds.as_numpy(train_ds)
-    numpy_test_ds = tfds.as_numpy(test_ds)
-    X_train, y_train, X_test, y_test = numpy_train_ds["text"], numpy_train_ds["label"], numpy_test_ds['text'], numpy_test_ds['label']
+    max_features = 20000  # Only consider the top 20k words
+    maxlen = 200  # Only consider the first 200 words of each movie review
+    (X_train, y_train), (X_test, y_test) = keras.datasets.imdb.load_data(num_words=max_features)
+    X_train = keras.preprocessing.sequence.pad_sequences(X_train, maxlen=maxlen)
+    X_test = keras.preprocessing.sequence.pad_sequences(X_test, maxlen=maxlen)
 
     train_folder_path = os.path.join(train_set_path, dataset_name)
     test_folder_path = os.path.join(test_set_path, dataset_name)
