@@ -12,6 +12,8 @@ def make_model(max_features):
     x = layers.Bidirectional(layers.LSTM(64, return_sequences=True))(x)
     x = layers.Bidirectional(layers.LSTM(32, return_sequences=True))(x)
     x = layers.Bidirectional(layers.LSTM(16))(x)
+    x = layers.Dense(4, activation='relu')(x)
+    x = layers.BatchNormalization()(x)
     # Add a classifier
     outputs = layers.Dense(1, activation="sigmoid")(x)
     model = keras.Model(inputs, outputs)
