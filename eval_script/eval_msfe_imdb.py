@@ -90,10 +90,10 @@ def train_test(args_list):
 if __name__ == '__main__':
 
     dataset_name = 'imdb_reviews'
-    classification_algorithm = 'dl-lstm'
     network = 'lstm'
     imb_ratio = '10'
     loss = 'MSFE'
+    classification_algorithm = 'dl-' + loss
 
     dataset, info = tfds.load(dataset_name + '/subwords8k', with_info=True, as_supervised=True)
 
