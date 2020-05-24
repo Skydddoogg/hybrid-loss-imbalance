@@ -7,7 +7,7 @@ from sklearn import preprocessing
 import os
 import argparse
 import warnings
-from eval_script.config_imdb import BATCH_SIZE, EPOCHS, EARLY_STOPPING, METRICS, ALPHA_RANGE, GAMMA_RANGE, BUFFER_SIZE, max_features
+from eval_script.config_imdb import BATCH_SIZE, EPOCHS, EARLY_STOPPING, METRICS, ALPHA_RANGE, GAMMA_RANGE, BUFFER_SIZE, max_features, IMB_LV
 from config_path import result_path
 from eval_script.utils import save_results, choose_network
 from external_models.DeepLearning import lstm, utils
@@ -104,7 +104,6 @@ if __name__ == '__main__':
 
     dataset_name = 'imdb_reviews'
     network = 'lstm'
-    imb_ratio = '10'
     loss = 'Hybrid'
     classification_algorithm = 'dl-' + loss
 
@@ -112,4 +111,5 @@ if __name__ == '__main__':
 
     encoder = info.features['text'].encoder
 
-    train_test([dataset_name, classification_algorithm, loss, network, imb_ratio, encoder])
+    for imb_ratio in IMB_LV:
+        train_test([dataset_name, classification_algorithm, loss, network, str(imb_ratio), encoder])

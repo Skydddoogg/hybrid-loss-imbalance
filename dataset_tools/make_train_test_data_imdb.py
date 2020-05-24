@@ -64,7 +64,7 @@ if __name__ == "__main__":
         os.mkdir(test_folder_path + '/X')
         os.mkdir(test_folder_path + '/y')
 
-    IMB_RATIO = [10]
+    IMB_RATIO = [20, 10, 5]
 
     negative_class = [0]
     positive_class = [1]
