@@ -37,10 +37,4 @@ def make_model(max_features):
     model.add(layers.Dense(1))
     model.add(layers.Activation('sigmoid'))
 
-    # model = keras.models.Sequential()
-    # model.add(layers.Embedding(max_features, 128))
-    # model.add(layers.LSTM(128, dropout=0.2, recurrent_dropout=0.2))
-    # model.add(layers.Dense(1, activation='sigmoid'))
-
-
     return model
