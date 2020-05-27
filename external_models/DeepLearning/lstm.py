@@ -3,27 +3,39 @@ from tensorflow.keras import layers
 
 def make_model(max_features):
 
+    embedding_dims = 50
     filters = 250
     kernel_size = 3
     hidden_dims = 250
-    # Input for variable-length sequences of integers
-    inputs = keras.Input(shape=(None,), dtype="int32")
-    # Embed each integer in a 128-dimensional vector
-    x = layers.Embedding(max_features, 128)(inputs)
-    x = layers.Dropout(0.2)(x)
-    x = layers.Conv1D(filters,
-                 kernel_size,
-                 padding='valid',
-                 activation='relu',
-                 strides=1)(x)
+    maxlen = 200
 
-    x = layers.GlobalMaxPooling1D()(x)
+    model = keras.models.Sequential()
 
-    x = layers.Dense(hidden_dims)(x)
-    x = layers.Dropout(0.2)(x)
-    x = layers.Activation('relu')(x)
-    outputs = layers.Dense(1, activation="sigmoid")(x)
-    model = keras.Model(inputs, outputs)
+    # we start off with an efficient embedding layer which maps
+    # our vocab indices into embedding_dims dimensions
+    model.add(layers.Embedding(max_features,
+                        embedding_dims,
+                        input_length=maxlen))
+    model.add(layers.Dropout(0.2))
+
+    # we add a Convolution1D, which will learn filters
+    # word group filters of size filter_length:
+    model.add(layers.Conv1D(filters,
+                    kernel_size,
+                    padding='valid',
+                    activation='relu',
+                    strides=1))
+    # we use max pooling:
+    model.add(layers.GlobalMaxPooling1D())
+
+    # We add a vanilla hidden layer:
+    model.add(layers.Dense(hidden_dims))
+    model.add(layers.Dropout(0.2))
+    model.add(layers.Activation('relu'))
+
+    # We project onto a single unit output layer, and squash it with a sigmoid:
+    model.add(layers.Dense(1))
+    model.add(layers.Activation('sigmoid'))
 
     # model = keras.models.Sequential()
     # model.add(layers.Embedding(max_features, 128))
