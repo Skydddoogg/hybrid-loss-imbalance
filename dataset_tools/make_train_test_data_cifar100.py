@@ -25,9 +25,9 @@ def make_new_label(y, classes, target):
 
     return y
 
-def get_reduced_data(X, y, reduction_ratio):
+def get_reduced_data(X, y, n_desired):
 
-    desired_indices = np.random.choice([i for i in range(y.shape[0])], (y.shape[0] * reduction_ratio) // 100)
+    desired_indices = np.random.choice([i for i in range(y.shape[0])], n_desired)
 
     desired_X, desired_y = X[desired_indices], y[desired_indices]
 
@@ -52,14 +52,14 @@ if __name__ == "__main__":
     X_train, y_train, X_test, y_test = numpy_train_ds["image"] / 255.0, numpy_train_ds["label"], numpy_test_ds['image'] / 255.0, numpy_test_ds['label']
 
     ex_dataset = {
-        # 'Tree1': {
-        #     'positive_class': [47], # 47 is maple tree
-        #     'negative_class': [52] # 52 is oak tree
-        # },
-        # 'Tree2': {
-        #     'positive_class': [47], # 47 is maple tree
-        #     'negative_class': [56] # 56 is palm tree
-        # },
+        'Tree1': {
+            'positive_class': [47], # 47 is maple tree
+            'negative_class': [52] # 52 is oak tree
+        },
+        'Tree2': {
+            'positive_class': [47], # 47 is maple tree
+            'negative_class': [56] # 56 is palm tree
+        },
         'Household':{
             'positive_class': [22, 39, 40, 86, 87],
             'negative_class': [5, 20, 25, 84, 94]
@@ -95,10 +95,25 @@ if __name__ == "__main__":
 
         REDUCTION_RATIO = [20, 10, 5]
 
+        in_X_train = positive_class_X_train
+        in_X_test = positive_class_X_test
+        in_y_train = positive_class_y_train
+        in_y_test = positive_class_y_test
+
         for ratio in REDUCTION_RATIO:
-            print("{0}: Reducing representation of positive class to {1}%".format(ex, ratio))
-            reduced_positive_class_X_train, reduced_positive_class_y_train = get_reduced_data(positive_class_X_train, positive_class_y_train, ratio)
-            reduced_positive_class_X_test, reduced_positive_class_y_test = get_reduced_data(positive_class_X_test, positive_class_y_test, ratio)
+
+            train_n_desired = (positive_class_y_train.shape[0] * ratio) // 100
+            test_n_desired = (positive_class_y_test.shape[0] * ratio) // 100
+
+            print("{0}: Reducing representation of positive class to {1}% ({2}, {3})".format(ex, ratio, train_n_desired, test_n_desired))
+
+            reduced_positive_class_X_train, reduced_positive_class_y_train = get_reduced_data(in_X_train, in_y_train, train_n_desired)
+            reduced_positive_class_X_test, reduced_positive_class_y_test = get_reduced_data(in_X_test, in_y_test, test_n_desired)
+
+            in_X_train = reduced_positive_class_X_train
+            in_X_test = reduced_positive_class_X_test
+            in_y_train = reduced_positive_class_y_train
+            in_y_test = reduced_positive_class_y_test
 
             combined_X_train, combined_y_train = np.concatenate((negative_class_X_train, reduced_positive_class_X_train), axis=0), np.concatenate((negative_class_y_train, reduced_positive_class_y_train), axis=0)
             combined_X_test, combined_y_test = np.concatenate((negative_class_X_test, reduced_positive_class_X_test), axis=0), np.concatenate((negative_class_y_test, reduced_positive_class_y_test), axis=0)
