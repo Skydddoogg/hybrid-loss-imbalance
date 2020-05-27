@@ -14,3 +14,4 @@ def make_model(max_features):
     model = keras.Model(inputs, outputs)
 
     return model
+
