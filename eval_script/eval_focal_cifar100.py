@@ -27,8 +27,8 @@ def train_test(args_list):
 
     reduction_ratio, dataset_name, classification_algorithm, loss, network, _round = args_list
 
-    X_train, X_test, X_valid, y_train, y_test, y_valid = get_splitted_data(dataset_name, reduction_ratio, validation = True)
-    # X_train, X_test, y_train, y_test = get_mocked_imbalanced_data(n_samples = 100, n_features = 5, neg_ratio = 0.9)
+    X_train, X_test, y_train, y_test = get_splitted_data(dataset_name, reduction_ratio)
+    # X_train, X_test, X_valid, y_train, y_test, y_valid = get_splitted_data(dataset_name, reduction_ratio, validation = True)
 
     # Prepare callbacks
     # log_dir = "gs://sky-movo/class_imbalance/cifar100_logs/fit/" + network + '/' + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
@@ -74,7 +74,7 @@ def train_test(args_list):
                 y_train,
                 epochs=EPOCHS,
                 batch_size=BATCH_SIZE,
-                validation_data=(X_valid, y_valid),
+                validation_data=(X_test, y_test),
                 callbacks=[EARLY_STOPPING],
                 verbose=1)
 
