@@ -7,7 +7,7 @@ from sklearn import preprocessing
 import os
 import argparse
 import warnings
-from eval_script.config_imdb import BATCH_SIZE, EPOCHS, EARLY_STOPPING, METRICS, ALPHA_RANGE, GAMMA_RANGE, BUFFER_SIZE, max_features, IMB_LV
+from eval_script.config_imdb import BATCH_SIZE, EPOCHS, EARLY_STOPPING, METRICS, ALPHA_RANGE, GAMMA_RANGE, BUFFER_SIZE, max_features, IMB_LV, maxlen
 from config_path import result_path
 from eval_script.utils import save_results, choose_network
 from external_models.DeepLearning import lstm, utils, vdcnn

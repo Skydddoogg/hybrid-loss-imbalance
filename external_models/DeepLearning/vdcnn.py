@@ -64,8 +64,8 @@ def VDCNN(num_classes = 1, depth=9, sequence_length=1024, embedding_dim=16,
     else:
         raise ValueError('unsupported depth for VDCNN.')
 
-    inputs = Input(shape=(sequence_length, ), name='inputs')
-    embedded_chars = Embedding(input_dim=sequence_length, output_dim=embedding_dim)(inputs)
+    inputs = keras.Input(shape=(None,), dtype="int32", name='inputs')
+    embedded_chars = Embedding(sequence_length, embedding_dim)(inputs)
     out = Conv1D(filters=64, kernel_size=3, strides=1, padding='same', name='temp_conv')(embedded_chars)
 
     # Convolutional Block 64
