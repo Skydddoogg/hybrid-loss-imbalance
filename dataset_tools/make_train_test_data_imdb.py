@@ -75,10 +75,20 @@ if __name__ == "__main__":
     positive_class_X_train, positive_class_y_train = get_data_for_one_class(X_train, y_train, positive_class)
     positive_class_X_test, positive_class_y_test = get_data_for_one_class(X_test, y_test, positive_class)
 
+    in_X_train = positive_class_X_train
+    in_X_test = positive_class_X_test
+    in_y_train = positive_class_y_train
+    in_y_test = positive_class_y_test
+
     for ratio in IMB_RATIO:
         print("{0}: Reducing representation of positive class to {1}%".format(dataset_name, ratio))
         reduced_positive_class_X_train, reduced_positive_class_y_train = get_reduced_data(positive_class_X_train, positive_class_y_train, ratio)
         reduced_positive_class_X_test, reduced_positive_class_y_test = get_reduced_data(positive_class_X_test, positive_class_y_test, ratio)
+
+        in_X_train = reduced_positive_class_X_train
+        in_X_test = reduced_positive_class_X_test
+        in_y_train = reduced_positive_class_y_train
+        in_y_test = reduced_positive_class_y_test
 
         combined_X_train, combined_y_train = np.concatenate((negative_class_X_train, reduced_positive_class_X_train), axis=0), np.concatenate((negative_class_y_train, reduced_positive_class_y_train), axis=0)
         combined_X_test, combined_y_test = np.concatenate((negative_class_X_test, reduced_positive_class_X_test), axis=0), np.concatenate((negative_class_y_test, reduced_positive_class_y_test), axis=0)
