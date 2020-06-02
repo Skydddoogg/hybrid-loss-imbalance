@@ -35,10 +35,8 @@ def compute_error(y_true, y_pred, positive_prob):
     pos_error = 1 - (pos_acc / count[1])
     neg_error = 1 - (neg_acc / count[0])
 
-    print("Error on positive: %.2f" % (pos_error * 100))
-    print("Error on negative: %.2f" % (neg_error * 100))
-    
-    print("Mean Error: %.2f" % (((pos_error + neg_error) / 2) * 100))
+    print("positive: {0:.2f}, negative: {1:.2f}".format((pos_error * 100), (neg_error * 100)))
+    print("mean: %.2f" % (((pos_error + neg_error) / 2) * 100))
 
 if __name__ == "__main__":
 
