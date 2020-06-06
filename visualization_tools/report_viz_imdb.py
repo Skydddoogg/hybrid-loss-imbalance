@@ -64,9 +64,9 @@ def create_report(dataset_name, reduction_ratio, network, loss_list):
 
     for loss in LOSS_LIST:
         if loss == best_loss:
-            print('%20s: %.2f±%.2f (AUC = %.2f) - Best' % (loss, np.average(f1_loss[loss]), np.std(f1_loss[loss]), np.average(auc_loss[loss])))
+            print('%20s: %.2f±%.2f (AUC = %.2f) - Best' % (loss, np.average(f1_loss[loss]) * 100, np.std(f1_loss[loss]), np.average(auc_loss[loss]) * 100))
         else:
-            print('%20s: %.2f±%.2f (AUC = %.2f)' % (loss, np.average(f1_loss[loss]), np.std(f1_loss[loss]), np.average(auc_loss[loss])))
+            print('%20s: %.2f±%.2f (AUC = %.2f)' % (loss, np.average(f1_loss[loss]) * 100, np.std(f1_loss[loss]), np.average(auc_loss[loss]) * 100))
 
 
 if __name__ == '__main__':
