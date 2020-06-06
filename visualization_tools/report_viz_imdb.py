@@ -14,7 +14,6 @@ import warnings
 warnings.filterwarnings("ignore")
 
 from config_path import result_path, viz_path
-from eval_script import config_imdb
 
 def create_report(dataset_name, reduction_ratio, network, loss_list):
 
@@ -83,7 +82,9 @@ if __name__ == '__main__':
 
     model_architecture = 'lstm'
 
-    for ratio in config_imdb.IMB_LV:
+    IMB_LV = [20, 10, 5]
+
+    for ratio in IMB_LV:
         print("{0} at {1} reduction ratio".format(dataset_name, str(ratio)))
         create_report(dataset_name, str(ratio), model_architecture, LOSS_LIST)
 

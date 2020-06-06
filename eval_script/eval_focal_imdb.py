@@ -5,6 +5,9 @@ import numpy as np
 from dataset_tools.utils import get_splitted_data, get_mocked_imbalanced_data
 from sklearn import preprocessing
 import os
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
 import argparse
 import warnings
 from eval_script.config_imdb import BATCH_SIZE, EPOCHS, EARLY_STOPPING, METRICS, ALPHA_RANGE, GAMMA_RANGE, BUFFER_SIZE, max_features, IMB_LV, maxlen
@@ -25,14 +28,14 @@ def train_test(args_list):
 
     dataset_name, classification_algorithm, loss, network, imb_ratio, encoder = args_list
 
-    X_train, X_test, y_train, y_test = get_splitted_data(dataset_name, imb_ratio)
+    X_train, X_test, X_valid, y_train, y_test, y_valid = get_splitted_data(dataset_name, imb_ratio, validation = True)
 
 #     # Prepare callbacks
 #     # log_dir = "gs://sky-movo/class_imbalance/cifar100_logs/fit/" + network + '/' + dataset_name + '/' + 'imb_ratio_' + imb_ratio + '/' + classification_algorithm
 #     # log_dir = "cifar100_logs/fit/" + dataset_name + '/' + 'imb_ratio_' + imb_ratio + '/' + classification_algorithm
 #     # tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
-    initial_learning_rate = 0.1
+    initial_learning_rate = 0.0001
     lr_schedule = keras.optimizers.schedules.ExponentialDecay(
         initial_learning_rate,
         decay_steps=100000,
@@ -72,7 +75,7 @@ def train_test(args_list):
                 y_train,
                 epochs=EPOCHS,
                 batch_size=BATCH_SIZE,
-                validation_data=(X_test, y_test),
+                validation_data=(X_valid, y_valid),
                 callbacks=[EARLY_STOPPING],
                 verbose=1)
 
