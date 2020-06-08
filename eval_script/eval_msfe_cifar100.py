@@ -6,7 +6,7 @@ from dataset_tools.utils import get_splitted_data, get_mocked_imbalanced_data
 from sklearn import preprocessing
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 import argparse
 import warnings

@@ -6,7 +6,7 @@ from dataset_tools.utils import get_splitted_data, get_mocked_imbalanced_data
 from sklearn import preprocessing
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 import argparse
 import warnings
@@ -56,7 +56,7 @@ def train_test(args_list):
             loss_function = custom_loss.Focal(gamma = gamma, alpha = alpha).balanced_focal
 
             model.compile(
-                optimizer=tf.keras.optimizers.Adam(learning_rate=lr_schedule),
+                optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001),
                 loss=loss_function,
                 metrics=METRICS)
 
@@ -120,7 +120,7 @@ if __name__ == '__main__':
 
     count = 1
 
-    loss = 'Balanced-FL'
+    loss = 'FL'
 
     for dataset in DATASETS:
 
