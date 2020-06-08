@@ -39,6 +39,8 @@ def compute_error(y_true, y_pred, positive_prob):
     print("positive: {0:.2f}, negative: {1:.2f}".format((pos_error * 100), (neg_error * 100)))
     print("mean: %.2f" % (((pos_error + neg_error) / 2) * 100))
 
+    return pos_error * 100, neg_error * 100
+
 if __name__ == "__main__":
 
     # Argument management
@@ -57,12 +59,25 @@ if __name__ == "__main__":
         'Balanced-FL',
         'Balanced-Hybrid',
         ]
-    for ratio in ['20', '10', '5']:
+    pos_error_ratio = {}
+    neg_error_ratio = {}
+    for ratio in [20, 10, 5]:
         print(ratio)
+        pos_error_loss = {}
+        neg_error_loss = {}
         for loss in LOSS_LIST:
             print(loss, '----------------------------------------------------')
             classification_algorithm = 'dl-' + loss
             y_true = np.load(os.path.join(result_path, dataset_name, 'groundtruth', network + '_' + 'round_' + str(1) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(ratio) + ".npy"))
             y_pred_prob = np.load(os.path.join(result_path, dataset_name, 'probability', network + '_' + 'round_' + str(1) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(ratio) + ".npy"))
             y_pred = np.load(os.path.join(result_path, dataset_name, 'prediction', network + '_' + 'round_' + str(1) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(ratio) + ".npy"))
-            compute_error(y_true, y_pred, y_pred_prob)
+            _pos, _neg = compute_error(y_true, y_pred, y_pred_prob)
+
+            pos_error_loss[loss] = _pos
+            neg_error_loss[loss] = _neg
+
+        pos_error_ratio[ratio] = pos_error_loss
+        neg_error_ratio[ratio] = neg_error_loss
+
+    for loss in LOSS_LIST:
+        print('{0} & {1:.2f} & {2:.2f} & {3:.2f} & {4:.2f} & {5:.2f} & {6:.2f} & {7:.2f} & {8:.2f} & {9:.2f}'.format(loss, pos_error_ratio[20][loss], pos_error_ratio[10][loss], pos_error_ratio[5][loss], neg_error_ratio[20][loss], neg_error_ratio[10][loss], neg_error_ratio[5][loss], (neg_error_ratio[20][loss] + pos_error_ratio[20][loss]) / 2, (neg_error_ratio[10][loss] + pos_error_ratio[10][loss]) / 2, (neg_error_ratio[5][loss] + pos_error_ratio[5][loss]) / 2))
