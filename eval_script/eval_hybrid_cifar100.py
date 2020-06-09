@@ -88,7 +88,6 @@ def train_test(args_list):
 
             f1 = f1_score(y_test, y_pred)
             if f1 >= comparable_f1:
-                print(y_pred, loss)
 
                 # Save
                 save_results(y_test, y_pred, y_pred_prob, 'round_' + str(_round) + '_' + classification_algorithm, dataset_name, reduction_ratio, network)
