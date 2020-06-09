@@ -30,7 +30,7 @@ def train_test(args_list):
     reduction_ratio, dataset_name, classification_algorithm, loss, network, _round = args_list
 
     # X_train, X_test, y_train, y_test = get_splitted_data(dataset_name, reduction_ratio)
-    X_train, X_test, X_valid, y_train, y_test, y_valid = get_splitted_data(dataset_name, reduction_ratio, validation = True)
+    X_train, X_test, X_valid, y_train, y_test, y_valid = get_splitted_data(dataset_name, reduction_ratio, validation = True, seed = _round)
 
     # Prepare callbacks
     # log_dir = "gs://sky-movo/class_imbalance/cifar100_logs/fit/" + network + '/' + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
@@ -73,19 +73,17 @@ def train_test(args_list):
         batch_size=BATCH_SIZE,
         validation_data=(X_valid, y_valid),
         callbacks=[EARLY_STOPPING],
-        verbose=1)
+        verbose=0)
 
     # Get predictions
     y_pred = get_prediction(model, X_test)
     y_pred_prob = model.predict(X_test)
     y_pred_prob = np.reshape(y_pred_prob, (y_pred_prob.shape[0],))
 
-    print(y_pred, loss)
-
     # Save
     save_results(y_test, y_pred, y_pred_prob, 'round_' + str(_round) + '_' + classification_algorithm, dataset_name, reduction_ratio, network)
     # utils.save_model(model, classification_algorithm + '_' + dataset_name + '_' + reduction_ratio, dataset_name)
-    utils.save_history(history, classification_algorithm + '_' + dataset_name + '_' + reduction_ratio, dataset_name)
+    utils.save_history(history, 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + reduction_ratio, dataset_name)
 
 
 if __name__ == '__main__':
