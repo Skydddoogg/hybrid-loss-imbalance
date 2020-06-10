@@ -19,7 +19,6 @@ def save_results(y_true, y_pred, prob, classification_algorithm, dataset_name, i
 
 def choose_network(network_name):
     # Model
-    print(network_name)
     if network_name == 'resnetV2':
         return resnetV2
     elif network_name == 'MFE_image_net1':
