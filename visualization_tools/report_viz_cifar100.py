@@ -95,11 +95,11 @@ if __name__ == '__main__':
     LOSS_LIST = [
         'MFE',
         'MSFE',
-        'Balanced-FL',
-        'Balanced-Hybrid'
+        'FL',
+        'Hybrid'
     ]
 
-    N_ROUND = 1
+    N_ROUND = 5
 
     REDUCTION_RATIO = [20, 10, 5]
 
