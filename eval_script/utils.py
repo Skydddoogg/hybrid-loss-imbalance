@@ -31,3 +31,12 @@ def choose_network(network_name):
         return densenet201
     elif network_name == 'mobilenetV2':
         return mobilenetV2
+
+def compute_minority_threshold(y):
+
+    unique, counts = np.unique(y, return_counts=True)
+    counted_labels = dict(zip(unique, counts))
+
+    minor_threshold = (counted_labels[1] / (counted_labels[0] + counted_labels[1]))
+
+    return minor_threshold

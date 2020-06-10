@@ -12,7 +12,7 @@ import argparse
 import warnings
 from eval_script.config_cifar100 import BATCH_SIZE, EPOCHS, EARLY_STOPPING, SEED, METRICS, N_ROUND, ALPHA_RANGE, GAMMA_RANGE
 from config_path import result_path
-from eval_script.utils import save_results, choose_network
+from eval_script.utils import save_results, choose_network, compute_minority_threshold
 from external_models.DeepLearning import resnetV2, utils, MFE_image_net1, MFE_image_net2
 import tensorflow as tf
 from tensorflow import keras
@@ -33,6 +33,8 @@ def train_test(args_list):
     # X_train, X_test, y_train, y_test = get_splitted_data(dataset_name, reduction_ratio)
     X_train, X_test, X_valid, y_train, y_test, y_valid = get_splitted_data(dataset_name, reduction_ratio, validation = True, seed = _round)
 
+    minor_threshold = compute_minority_threshold(y_train)
+
     # Prepare callbacks
     # log_dir = "gs://sky-movo/class_imbalance/cifar100_logs/fit/" + network + '/' + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
     # log_dir = "cifar100_logs/fit/" + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
@@ -50,51 +52,50 @@ def train_test(args_list):
 
     comparable_f1 = -np.Infinity
 
-    for alpha in ALPHA_RANGE:
-        for gamma in GAMMA_RANGE:
+    for gamma in GAMMA_RANGE:
 
-            loss_function = custom_loss.Hybrid(gamma=gamma, alpha=alpha).balanced_hybrid
+        loss_function = custom_loss.Hybrid(gamma=gamma, alpha=minor_threshold).balanced_hybrid
 
-            model.compile(
-                optimizer=tf.keras.optimizers.Adam(learning_rate=lr_schedule),
-                loss=loss_function,
-                metrics=METRICS)
+        model.compile(
+            optimizer=tf.keras.optimizers.Adam(learning_rate=lr_schedule),
+            loss=loss_function,
+            metrics=METRICS)
 
-            initial_weight_path = os.path.join('model_initial_weights')
+        initial_weight_path = os.path.join('model_initial_weights')
 
-            if not os.path.isdir(initial_weight_path):
-                os.mkdir(initial_weight_path)
+        if not os.path.isdir(initial_weight_path):
+            os.mkdir(initial_weight_path)
+            os.mkdir(os.path.join(initial_weight_path, network))
+            utils.make_initial_weights(model, os.path.join(initial_weight_path, network, 'initial_weights'))
+        else:
+            if not os.path.isdir(os.path.join(initial_weight_path, network)):
                 os.mkdir(os.path.join(initial_weight_path, network))
                 utils.make_initial_weights(model, os.path.join(initial_weight_path, network, 'initial_weights'))
-            else:
-                if not os.path.isdir(os.path.join(initial_weight_path, network)):
-                    os.mkdir(os.path.join(initial_weight_path, network))
-                    utils.make_initial_weights(model, os.path.join(initial_weight_path, network, 'initial_weights'))
 
-            model.load_weights(os.path.join(initial_weight_path, network, 'initial_weights', 'initial_weights'))
-            history = model.fit(
-                X_train,
-                y_train,
-                epochs=EPOCHS,
-                batch_size=BATCH_SIZE,
-                validation_data=(X_valid, y_valid),
-                callbacks=[EARLY_STOPPING],
-                verbose=0)
+        model.load_weights(os.path.join(initial_weight_path, network, 'initial_weights', 'initial_weights'))
+        history = model.fit(
+            X_train,
+            y_train,
+            epochs=EPOCHS,
+            batch_size=BATCH_SIZE,
+            validation_data=(X_valid, y_valid),
+            callbacks=[EARLY_STOPPING],
+            verbose=0)
 
-            # Get predictions
-            y_pred = get_prediction(model, X_test)
-            y_pred_prob = model.predict(X_test)
-            y_pred_prob = np.reshape(y_pred_prob, (y_pred_prob.shape[0],))
+        # Get predictions
+        y_pred = get_prediction(model, X_test)
+        y_pred_prob = model.predict(X_test)
+        y_pred_prob = np.reshape(y_pred_prob, (y_pred_prob.shape[0],))
 
-            f1 = f1_score(y_test, y_pred)
-            if f1 >= comparable_f1:
+        f1 = f1_score(y_test, y_pred)
+        if f1 >= comparable_f1:
 
-                # Save
-                save_results(y_test, y_pred, y_pred_prob, 'round_' + str(_round) + '_' + classification_algorithm, dataset_name, reduction_ratio, network)
-                # utils.save_model(model, classification_algorithm + '_' + dataset_name + '_' + reduction_ratio, dataset_name)
-                utils.save_history(history, 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + reduction_ratio, dataset_name)
+            # Save
+            save_results(y_test, y_pred, y_pred_prob, 'round_' + str(_round) + '_' + classification_algorithm, dataset_name, reduction_ratio, network)
+            # utils.save_model(model, classification_algorithm + '_' + dataset_name + '_' + reduction_ratio, dataset_name)
+            utils.save_history(history, 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + reduction_ratio, dataset_name)
 
-                comparable_f1 = f1
+            comparable_f1 = f1
 
 
 if __name__ == '__main__':

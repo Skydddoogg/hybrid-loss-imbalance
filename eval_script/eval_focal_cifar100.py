@@ -12,7 +12,7 @@ import argparse
 import warnings
 from eval_script.config_cifar100 import BATCH_SIZE, EPOCHS, EARLY_STOPPING, SEED, METRICS, N_ROUND, ALPHA_RANGE, GAMMA_RANGE
 from config_path import result_path
-from eval_script.utils import save_results, choose_network
+from eval_script.utils import save_results, choose_network, compute_minority_threshold
 from external_models.DeepLearning import resnetV2, utils, MFE_image_net1, MFE_image_net2
 import tensorflow as tf
 from tensorflow import keras
@@ -33,10 +33,7 @@ def train_test(args_list):
     # X_train, X_test, y_train, y_test = get_splitted_data(dataset_name, reduction_ratio)
     X_train, X_test, X_valid, y_train, y_test, y_valid = get_splitted_data(dataset_name, reduction_ratio, validation = True, seed = _round)
 
-    unique, counts = np.unique(y_train, return_counts=True)
-    counted_labels = dict(zip(unique, counts))
-
-    minor_threshold = (counted_labels[1] / (counted_labels[0] + counted_labels[1]))
+    minor_threshold = compute_minority_threshold(y_train)
 
     # Prepare callbacks
     # log_dir = "gs://sky-movo/class_imbalance/cifar100_logs/fit/" + network + '/' + dataset_name + '/' + 'reduction_ratio_' + reduction_ratio + '/' + classification_algorithm
