@@ -6,7 +6,7 @@ from dataset_tools.utils import get_splitted_data, get_mocked_imbalanced_data
 from sklearn import preprocessing
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 import argparse
 import warnings
@@ -52,9 +52,9 @@ def train_test(args_list):
 
     comparable_f1 = -np.Infinity
 
-    for gamma in GAMMA_RANGE:
+    for alpha in ALPHA_RANGE:
 
-        loss_function = custom_loss.Focal(gamma = gamma, alpha = minor_threshold).balanced_focal
+        loss_function = custom_loss.Focal(gamma = 2.0, alpha = alpha).balanced_focal
 
         model.compile(
             optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001),
