@@ -10,7 +10,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 import argparse
 import warnings
-from eval_script.config_imdb import BATCH_SIZE, EPOCHS, EARLY_STOPPING, METRICS, ALPHA_RANGE, GAMMA_RANGE, BUFFER_SIZE, max_features, IMB_LV, maxlen
+from eval_script.config_imdb import BATCH_SIZE, EPOCHS, EARLY_STOPPING, METRICS, ALPHA_RANGE, GAMMA_RANGE, BUFFER_SIZE, max_features, IMB_LV, maxlen, N_ROUND
 from config_path import result_path
 from eval_script.utils import save_results, choose_network
 from external_models.DeepLearning import utils, transformer
@@ -26,9 +26,9 @@ warnings.filterwarnings('ignore')
 
 def train_test(args_list):
 
-    dataset_name, classification_algorithm, loss, network, imb_ratio, encoder = args_list
+    dataset_name, classification_algorithm, loss, network, imb_ratio, encoder, _round = args_list
 
-    X_train, X_test, X_valid, y_train, y_test, y_valid = get_splitted_data(dataset_name, imb_ratio, validation = True)
+    X_train, X_test, X_valid, y_train, y_test, y_valid = get_splitted_data(dataset_name, imb_ratio, validation = True, seed = _round)
 
 #     # Prepare callbacks
 #     # log_dir = "gs://sky-movo/class_imbalance/cifar100_logs/fit/" + network + '/' + dataset_name + '/' + 'imb_ratio_' + imb_ratio + '/' + classification_algorithm
@@ -50,63 +50,62 @@ def train_test(args_list):
     count = 1
 
     for alpha in ALPHA_RANGE:
-        for gamma in GAMMA_RANGE:
 
-            loss_function = custom_loss.Hybrid(gamma=gamma, alpha=alpha).balanced_hybrid
+        loss_function = custom_loss.Hybrid(gamma=2.0, alpha=alpha).balanced_hybrid
 
-            model.compile(
-                optimizer=tf.keras.optimizers.Adam(learning_rate=lr_schedule),
-                loss=loss_function,
-                metrics=METRICS)
+        model.compile(
+            optimizer=tf.keras.optimizers.Adam(learning_rate=lr_schedule),
+            loss=loss_function,
+            metrics=METRICS)
 
-            initial_weight_path = os.path.join('model_initial_weights')
+        initial_weight_path = os.path.join('model_initial_weights')
 
-            if not os.path.isdir(initial_weight_path):
-                os.mkdir(initial_weight_path)
+        if not os.path.isdir(initial_weight_path):
+            os.mkdir(initial_weight_path)
+            os.mkdir(os.path.join(initial_weight_path, network))
+            utils.make_initial_weights(model, os.path.join(initial_weight_path, network, 'initial_weights'))
+        else:
+            if not os.path.isdir(os.path.join(initial_weight_path, network)):
                 os.mkdir(os.path.join(initial_weight_path, network))
                 utils.make_initial_weights(model, os.path.join(initial_weight_path, network, 'initial_weights'))
-            else:
-                if not os.path.isdir(os.path.join(initial_weight_path, network)):
-                    os.mkdir(os.path.join(initial_weight_path, network))
-                    utils.make_initial_weights(model, os.path.join(initial_weight_path, network, 'initial_weights'))
 
-            model.load_weights(os.path.join(initial_weight_path, network, 'initial_weights', 'initial_weights'))
-            history = model.fit(
-                X_train,
-                y_train,
-                epochs=EPOCHS,
-                batch_size=BATCH_SIZE,
-                validation_data=(X_valid, y_valid),
-                callbacks=[EARLY_STOPPING],
-                verbose=1)
+        model.load_weights(os.path.join(initial_weight_path, network, 'initial_weights', 'initial_weights'))
+        history = model.fit(
+            X_train,
+            y_train,
+            epochs=EPOCHS,
+            batch_size=BATCH_SIZE,
+            validation_data=(X_valid, y_valid),
+            callbacks=[EARLY_STOPPING],
+            verbose=1)
 
-            # Get predictions
-            y_pred = model.predict(X_test)
-            y_pred = np.reshape(y_pred, (y_pred.shape[0],))
+        # Get predictions
+        y_pred = model.predict(X_test)
+        y_pred = np.reshape(y_pred, (y_pred.shape[0],))
 
-            y_pred[y_pred >= 0.5] = 1
-            y_pred[y_pred < 0.5] = 0
+        y_pred[y_pred >= 0.5] = 1
+        y_pred[y_pred < 0.5] = 0
 
-            y_pred_prob = model.predict(X_test)
-            y_pred_prob = np.reshape(y_pred_prob, (y_pred_prob.shape[0],))
+        y_pred_prob = model.predict(X_test)
+        y_pred_prob = np.reshape(y_pred_prob, (y_pred_prob.shape[0],))
 
-            f1 = f1_score(y_test, y_pred)
-            if f1 >= comparable_f1:
+        f1 = f1_score(y_test, y_pred)
+        if f1 >= comparable_f1:
 
-                # Save
-                save_results(y_test, y_pred, y_pred_prob, classification_algorithm, dataset_name, imb_ratio, network)
-                # utils.save_model(model, classification_algorithm + '_' + dataset_name + '_' + imb_ratio, dataset_name)
-                utils.save_history(history, classification_algorithm + '_' + dataset_name + '_' + imb_ratio, dataset_name)
+            # Save
+            save_results(y_test, y_pred, y_pred_prob, 'round_' + str(_round) + '_' + classification_algorithm, dataset_name, imb_ratio, network)
+            # utils.save_model(model, classification_algorithm + '_' + dataset_name + '_' + imb_ratio, dataset_name)
+            utils.save_history(history, 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + imb_ratio, dataset_name)
 
-                comparable_f1 = f1
-            print("{0}/{1}".format(count, len(ALPHA_RANGE)*len(GAMMA_RANGE)))
-            count += 1
+            comparable_f1 = f1
+        print("{0}/{1}".format(count, len(ALPHA_RANGE)*len(GAMMA_RANGE)))
+        count += 1
 
 
 if __name__ == '__main__':
 
     dataset_name = 'imdb_reviews'
-    network = 'lstm'
+    network = 'transformer'
     loss = 'Hybrid'
     classification_algorithm = 'dl-' + loss
 
@@ -114,5 +113,6 @@ if __name__ == '__main__':
 
     encoder = info.features['text'].encoder
 
-    for imb_ratio in IMB_LV:
-        train_test([dataset_name, classification_algorithm, loss, network, str(imb_ratio), encoder])
+    for _round in range(1, N_ROUND + 1):
+        for imb_ratio in IMB_LV:
+            train_test([dataset_name, classification_algorithm, loss, network, str(imb_ratio), encoder, _round])
