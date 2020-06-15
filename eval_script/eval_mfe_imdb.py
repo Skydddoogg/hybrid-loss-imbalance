@@ -10,7 +10,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 import argparse
 import warnings
-from eval_script.config_imdb import BATCH_SIZE, EPOCHS, EARLY_STOPPING, METRICS, ALPHA_RANGE, GAMMA_RANGE, BUFFER_SIZE, max_features, IMB_LV, maxlen
+from eval_script.config_imdb import BATCH_SIZE, EPOCHS, EARLY_STOPPING, METRICS, ALPHA_RANGE, GAMMA_RANGE, BUFFER_SIZE, max_features, IMB_LV, maxlen, N_ROUND
 from config_path import result_path
 from eval_script.utils import save_results, choose_network
 from external_models.DeepLearning import utils, transformer
@@ -26,9 +26,9 @@ warnings.filterwarnings('ignore')
 
 def train_test(args_list):
 
-    dataset_name, classification_algorithm, loss, network, imb_ratio, encoder = args_list
+    dataset_name, classification_algorithm, loss, network, imb_ratio, encoder, _round = args_list
 
-    X_train, X_test, X_valid, y_train, y_test, y_valid = get_splitted_data(dataset_name, imb_ratio, validation = True)
+    X_train, X_test, X_valid, y_train, y_test, y_valid = get_splitted_data(dataset_name, imb_ratio, validation = True, seed = _round)
 
 #     # Prepare callbacks
 #     # log_dir = "gs://sky-movo/class_imbalance/cifar100_logs/fit/" + network + '/' + dataset_name + '/' + 'imb_ratio_' + imb_ratio + '/' + classification_algorithm
@@ -72,16 +72,16 @@ def train_test(args_list):
     y_pred_prob = np.reshape(y_pred_prob, (y_pred_prob.shape[0],))
 
     # Save
-    save_results(y_test, y_pred, y_pred_prob, classification_algorithm, dataset_name, imb_ratio, network)
+    save_results(y_test, y_pred, y_pred_prob, 'round_' + str(_round) + '_' + classification_algorithm, dataset_name, imb_ratio, network)
     # utils.save_model(model, classification_algorithm + '_' + dataset_name + '_' + imb_ratio, dataset_name)
-    utils.save_history(history, classification_algorithm + '_' + dataset_name + '_' + imb_ratio, dataset_name)
+    utils.save_history(history, 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + imb_ratio, dataset_name)
 
 
 
 if __name__ == '__main__':
 
     dataset_name = 'imdb_reviews'
-    network = 'lstm'
+    network = 'transformer'
     loss = 'MFE'
     classification_algorithm = 'dl-' + loss
 
@@ -89,5 +89,6 @@ if __name__ == '__main__':
 
     encoder = info.features['text'].encoder
 
-    for imb_ratio in IMB_LV:
-        train_test([dataset_name, classification_algorithm, loss, network, str(imb_ratio), encoder])
+    for _round in range(1, N_ROUND + 1):
+        for imb_ratio in IMB_LV:
+            train_test([dataset_name, classification_algorithm, loss, network, str(imb_ratio), encoder, _round])
