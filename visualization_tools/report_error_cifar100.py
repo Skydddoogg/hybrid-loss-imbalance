@@ -72,9 +72,9 @@ if __name__ == "__main__":
             pos_error_list = []
             neg_error_list = []
             for _round in range(1, N_ROUND + 1):
-                y_true = np.load(os.path.join(result_path, dataset_name, 'groundtruth', network + '_' + 'round_' + str(1) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(ratio) + ".npy"))
-                y_pred_prob = np.load(os.path.join(result_path, dataset_name, 'probability', network + '_' + 'round_' + str(1) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(ratio) + ".npy"))
-                y_pred = np.load(os.path.join(result_path, dataset_name, 'prediction', network + '_' + 'round_' + str(1) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(ratio) + ".npy"))
+                y_true = np.load(os.path.join(result_path, dataset_name, 'groundtruth', network + '_' + 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(ratio) + ".npy"))
+                y_pred_prob = np.load(os.path.join(result_path, dataset_name, 'probability', network + '_' + 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(ratio) + ".npy"))
+                y_pred = np.load(os.path.join(result_path, dataset_name, 'prediction', network + '_' + 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(ratio) + ".npy"))
                 _pos, _neg = compute_error(y_true, y_pred, y_pred_prob)
 
                 pos_error_list.append(_pos)

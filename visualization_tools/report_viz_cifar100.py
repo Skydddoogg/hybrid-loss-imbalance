@@ -121,5 +121,4 @@ if __name__ == '__main__':
             auc_ratio[ratio] = _auc
 
         for loss in LOSS_LIST:
-            print('{0} & {1:.2f} & {2:.2f} & {3:.2f} & {4:.2f} & {5:.2f} & {6:.2f}'.format(loss, np.average(f1_ratio[20][loss]) * 100, np.average(f1_ratio[10][loss]) * 100, np.average(f1_ratio[5][loss]) * 100, np.average(auc_ratio[20][loss]) * 100, np.average(auc_ratio[10][loss]) * 100, np.average(auc_ratio[5][loss]) * 100))
-
+            print('& {0} & ${1:.2f}\pm{2:.2f}$ & ${3:.2f}\pm{4:.2f}$ & ${5:.2f}\pm{6:.2f}$ & ${7:.2f}\pm{8:.2f}$ & ${9:.2f}\pm{10:.2f}$ & ${11:.2f}\pm{12:.2f}$'.format(loss, np.average(f1_ratio[20][loss]) * 100, np.std(f1_ratio[20][loss]), np.average(f1_ratio[10][loss]) * 100, np.std(f1_ratio[10][loss]), np.average(f1_ratio[5][loss]) * 100, np.std(f1_ratio[5][loss]), np.average(auc_ratio[20][loss]) * 100, np.std(auc_ratio[20][loss]), np.average(auc_ratio[10][loss]) * 100, np.std(auc_ratio[10][loss]), np.average(auc_ratio[5][loss]) * 100, np.std(auc_ratio[5][loss])))
