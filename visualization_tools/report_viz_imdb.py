@@ -31,18 +31,20 @@ def create_report(dataset_name, reduction_ratio, network, loss_list):
         f1_collector = []
         auc_collector = []
 
-        y_test = np.load(os.path.join(result_path, dataset_name, 'groundtruth', network + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
-        y_pred = np.load(os.path.join(result_path, dataset_name, 'prediction', network + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
-        y_prob_pred = np.load(os.path.join(result_path, dataset_name, 'probability', network + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
+        for _round in range(1, N_ROUND + 1):
+            y_test = np.load(os.path.join(result_path, dataset_name, 'groundtruth', network + '_' + 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
+            y_pred = np.load(os.path.join(result_path, dataset_name, 'prediction', network + '_' + 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
+            y_prob = np.load(os.path.join(result_path, dataset_name, 'probability', network + '_' + 'round_' + str(_round) + '_' + classification_algorithm + '_' + dataset_name + '_' + str(reduction_ratio) + ".npy"))
+    
+            cm = confusion_matrix(y_test, y_pred)
+            fpr, tpr, _ = roc_curve(y_test, y_prob)
 
-        cm = confusion_matrix(y_test, y_pred)
-        fpr, tpr, _ = roc_curve(y_test, y_prob_pred)
 
-        f1 = f1_score(y_test, y_pred)
-        _auc = auc(fpr, tpr)
+            f1 = f1_score(y_test, y_pred)
+            _auc = auc(fpr, tpr)
 
-        f1_collector.append(f1)
-        auc_collector.append(_auc)
+            f1_collector.append(f1)
+            auc_collector.append(_auc)
 
         f1_collector = np.array(f1_collector)
         f1_loss[loss] = f1_collector
@@ -68,23 +70,33 @@ def create_report(dataset_name, reduction_ratio, network, loss_list):
         else:
             print('%20s: %.2f±%.2f (AUC = %.2f)' % (loss, np.average(f1_loss[loss]) * 100, np.std(f1_loss[loss]), np.average(auc_loss[loss]) * 100))
 
+    return f1_loss, auc_loss
 
 if __name__ == '__main__':
-
-    dataset_name = 'imdb_reviews'
 
     LOSS_LIST = [
         'MFE',
         'MSFE',
         'FL',
-        'Hybrid',
+        'Hybrid'
     ]
 
-    model_architecture = 'lstm'
+    dataset_name = 'imdb_reviews'
+    model_architecture = 'transformer'
+
+    N_ROUND = 3
 
     IMB_LV = [20, 10, 5]
 
-    for ratio in IMB_LV:
-        print("{0} at {1} reduction ratio".format(dataset_name, str(ratio)))
-        create_report(dataset_name, str(ratio), model_architecture, LOSS_LIST)
+    df_list = list()
+    f1_ratio = {}
+    auc_ratio = {}
 
+    for ratio in IMB_LV:
+        print("{0} at {1} reduction ratio".format(dataset_name, ratio))
+        f1, _auc = create_report(dataset_name, ratio, model_architecture, LOSS_LIST)
+        f1_ratio[ratio] = f1
+        auc_ratio[ratio] = _auc
+
+    for loss in LOSS_LIST:
+        print('& {0} & ${1:.2f}\pm{2:.2f}$ & ${3:.2f}\pm{4:.2f}$ & ${5:.2f}\pm{6:.2f}$ & ${7:.2f}\pm{8:.2f}$ & ${9:.2f}\pm{10:.2f}$ & ${11:.2f}\pm{12:.2f}$'.format(loss, np.average(f1_ratio[20][loss]) * 100, np.std(f1_ratio[20][loss]), np.average(f1_ratio[10][loss]) * 100, np.std(f1_ratio[10][loss]), np.average(f1_ratio[5][loss]) * 100, np.std(f1_ratio[5][loss]), np.average(auc_ratio[20][loss]) * 100, np.std(auc_ratio[20][loss]), np.average(auc_ratio[10][loss]) * 100, np.std(auc_ratio[10][loss]), np.average(auc_ratio[5][loss]) * 100, np.std(auc_ratio[5][loss])))
