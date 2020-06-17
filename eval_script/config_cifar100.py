@@ -1,7 +1,7 @@
 from tensorflow import keras
 
 BATCH_SIZE = 128
-EPOCHS = 500
+EPOCHS = 150
 EARLY_STOPPING = keras.callbacks.EarlyStopping(
     monitor='val_loss',
     verbose=0,
@@ -19,6 +19,6 @@ METRICS = [
       keras.metrics.AUC(name='auc'),
       keras.metrics.Accuracy('accuracy')
 ]
-N_ROUND = 5
+N_ROUND = 3
 ALPHA_RANGE = [0.75, 0.70, 0.65, 0.60, 0.55, 0.50, 0.45, 0.40, 0.35, 0.30, 0.25, 0.20, 0.15, 0.10]
 GAMMA_RANGE = [0.1, 0.2, 0.5, 1.0, 2.0, 5.0]
