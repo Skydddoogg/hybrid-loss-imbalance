@@ -1,7 +1,7 @@
 from tensorflow import keras
 
 BATCH_SIZE = 512
-EPOCHS = 500
+EPOCHS = 150
 BUFFER_SIZE = 10000
 max_features = 20000  # Only consider the top 20k words
 maxlen = 200  # Only consider the first 200 words of each movie review
