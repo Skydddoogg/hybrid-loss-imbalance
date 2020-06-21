@@ -84,7 +84,7 @@ if __name__ == '__main__':
     dataset_name = 'imdb_reviews'
     model_architecture = 'transformer'
 
-    N_ROUND = 3
+    N_ROUND = 5
 
     IMB_LV = [20, 10, 5]
 
